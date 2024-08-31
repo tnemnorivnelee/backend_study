@@ -4,13 +4,9 @@ import com.example.demo.domain.User;
 import com.example.demo.dto.AddUserRequest;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,6 +14,7 @@ public class UserController {
 
     private final UserService userService;
 
+    // Create
     @PostMapping("/auth")
     public ResponseEntity<User> addUser(@RequestBody AddUserRequest request) {
 
@@ -28,6 +25,14 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
         }
+    }
+
+    // Delete
+    @DeleteMapping("/auth/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
+        userService.delete(userId);
+
+        return ResponseEntity.ok().build();
     }
 }
 
