@@ -18,6 +18,9 @@ public class User {
     @Column(name = "id", updatable = false)
     private Long id;
 
+    @Column(name = "userId", updatable = false)
+    private String userId;
+
     @Column(name = "pwd", nullable = false)
     private String pwd;
 
@@ -26,7 +29,8 @@ public class User {
 
 
     @Builder
-    public User(String pwd, String name) {
+    public User(String userId, String pwd, String name) {
+        this.userId = userId;
         this.pwd = pwd;
         this.name = name;
     }

@@ -2,12 +2,12 @@ package com.example.demo.service;
 
 import com.example.demo.domain.User;
 import com.example.demo.dto.AddUserRequest;
+import com.example.demo.repository.CheckUserRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.beans.Transient;
-import java.util.List;
+import java.util.Optional;
 
 // Service
 // 비즈니스 로직 처리, 정보(객체)를 처리하는 로직 구현
@@ -21,11 +21,17 @@ import java.util.List;
 @Service
 public class UserService {
 
+    private final CheckUserRepository checkUserRepository;
     private final UserRepository userRepository;
 
     // Create
     public User save(AddUserRequest request) {
-        return userRepository.save(request.toEntity());
+
+        if(!checkUserRepository.existsByUserId(request.getUserId())) {
+            return userRepository.save(request.toEntity());
+        } else {
+            return null;
+        }
     }
 
 //    // Read

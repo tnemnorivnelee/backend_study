@@ -11,11 +11,14 @@ import lombok.NoArgsConstructor;
 @Getter
 public class AddUserRequest {
 
+    private String userId;
     private String pwd;
     private String name;
 
+
     public User toEntity() {
         return User.builder()
+                .userId(userId)
                 .pwd(pwd)
                 .name(name)
                 .build();
