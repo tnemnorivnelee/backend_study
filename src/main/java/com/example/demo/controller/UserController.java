@@ -32,7 +32,7 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
         userService.delete(userId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
 

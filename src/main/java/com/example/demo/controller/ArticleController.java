@@ -71,7 +71,7 @@ public class ArticleController {
     public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
         articleService.delete(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
     // Update
     @PutMapping("/article/{id}")
