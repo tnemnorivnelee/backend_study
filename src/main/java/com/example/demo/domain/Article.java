@@ -17,7 +17,7 @@ public class Article {
     // DB에 저장할 데이터 지정
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID AUTO_INCREMENT
     @Column(name = "id", updatable = false)
     private Long id;
 

@@ -15,20 +15,22 @@ public class UserController {
     private final UserService userService;
 
     // Create
-    @PostMapping("/auth")
+    @PostMapping("/register")
     public ResponseEntity<User> addUser(@RequestBody AddUserRequest request) {
 
         User user = userService.save(request);
 
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            // FORBIDDEN(403), 해당 요청에 대한 자원이 존재하므로 요청을 거부
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); 
         } else {
+            // CREATED(201), 새로운 자원을 성공적으로 생성
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
         }
     }
 
     // Delete
-    @DeleteMapping("/auth/{userId}")
+    @DeleteMapping("/register/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
         userService.delete(userId);
 

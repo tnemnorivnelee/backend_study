@@ -6,6 +6,8 @@ import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -15,10 +17,12 @@ public class UserService {
     // Create
     public User save(AddUserRequest request) {
 
-        if(!userRepository.existsByUserId(request.getUserId())) {
+        Optional<User> registeredUserId = userRepository.findById(request.getUserId());
+
+        if(registeredUserId.isEmpty()) {
             return userRepository.save(request.toEntity());
         } else {
-            return null;
+            throw new IllegalArgumentException("User already exists");
         }
     }
 
