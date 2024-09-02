@@ -39,6 +39,7 @@ public class ArticleController {
     // Create
     @PostMapping("/article")
     public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request) {
+
         Article savedArticle = articleService.save(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -48,6 +49,7 @@ public class ArticleController {
     // Read
     @GetMapping("/article/{id}") // {id} 경로변수, @PathVariable 어노테이션을 사용하여 메소드의 파라미터 값으로 가져와서 사용
     public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id) {
+
         Article article = articleService.findById(id);
 
         return ResponseEntity.ok()
@@ -57,6 +59,7 @@ public class ArticleController {
     // Read All
     @GetMapping("/articles")
     public ResponseEntity<List<ArticleResponse>> findAllArticle() {
+
         List<ArticleResponse> articles = articleService.findAll()
                 .stream()
                 .map(ArticleResponse::new)
@@ -69,6 +72,7 @@ public class ArticleController {
     // Delete
     @DeleteMapping("/article/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
+
         articleService.delete(id);
 
         return ResponseEntity.noContent().build();
@@ -77,6 +81,7 @@ public class ArticleController {
     // Update
     @PutMapping("/article/{id}")
     public ResponseEntity<Article> updateArticle(@PathVariable long id, @RequestBody UpdateArticleRequest request) {
+
         Article updatedArticle = articleService.update(id, request);
 
         return ResponseEntity.ok().body(updatedArticle);

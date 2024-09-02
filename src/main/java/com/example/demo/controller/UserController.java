@@ -20,18 +20,13 @@ public class UserController {
 
         User user = userService.save(request);
 
-        if (user == null) {
-            // FORBIDDEN(403), 해당 요청에 대한 자원이 존재하므로 요청을 거부
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); 
-        } else {
-            // CREATED(201), 새로운 자원을 성공적으로 생성
-            return ResponseEntity.status(HttpStatus.CREATED).body(user);
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     // Delete
     @DeleteMapping("/register/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
+    public ResponseEntity<String> deleteUser(@PathVariable String userId) {
+
         userService.delete(userId);
 
         return ResponseEntity.noContent().build();

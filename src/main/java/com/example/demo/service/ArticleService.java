@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.Transient;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 // Service
 // 비즈니스 로직 처리, 정보(객체)를 처리하는 로직 구현
@@ -43,6 +44,9 @@ public class ArticleService {
 
     // Delete
     public void delete(long id) {
+        if(!articleRepository.existsById(id)) {
+            throw new NoSuchElementException("Article does not exist");
+        }
         articleRepository.deleteById(id);
     }
 
