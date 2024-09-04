@@ -28,6 +28,9 @@ public class ArticleService {
 
     // Create
     public Article save(AddArticleRequest request) {
+//        if(request.getTitle().isEmpty() || request.getContent().isEmpty()) {
+//            throw new NoSuchElementException("title or content is empty");
+//        }
         return articleRepository.save(request.toEntity());
     }
 
@@ -39,13 +42,19 @@ public class ArticleService {
 
     // Read All
     public List<Article> findAll() {
-        return articleRepository.findAll();
+//        return articleRepository.findAll();
+        List<Article> articles = articleRepository.findAll();
+
+        if(articles.isEmpty()) {
+            throw new NoSuchElementException("Articles does not exits");
+        }
+        return articles;
     }
 
     // Delete
     public void delete(Long id) {
         if(!articleRepository.existsById(id)) {
-            throw new NoSuchElementException("Article does not exist");
+            throw new NoSuchElementException("no exist : " + id);
         }
         articleRepository.deleteById(id);
     }

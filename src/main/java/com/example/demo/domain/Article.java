@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 객체의 무결성을 유지하기 위해 AllArgs 대신 NoArgs 이노테이션 사용
 public class Article {
     // DB에 저장할 데이터 지정
 
