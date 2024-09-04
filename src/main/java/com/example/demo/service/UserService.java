@@ -17,7 +17,7 @@ public class UserService {
 
     // Create
     public User save(AddUserRequest request) {
-
+        // 중복 검사 후 회원가입 진행
         return (User) userRepository.findById(request.getUserId())
                 .map(user -> {
                     throw new IllegalArgumentException("User already exists");

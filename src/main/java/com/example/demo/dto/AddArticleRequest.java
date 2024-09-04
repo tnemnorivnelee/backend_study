@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 // 계층 간 데이터를 교환할 때 사용
 // 데이터 저장 담당 클래스
 // 필요한 데이터만 선택적으로 노출시켜 보안 강화
-
-@NoArgsConstructor
-@AllArgsConstructor
+//
+//@NoArgsConstructor
+//@AllArgsConstructor
 @Getter
 public class AddArticleRequest {
     // 글 작성 시 필요한 변수 선언

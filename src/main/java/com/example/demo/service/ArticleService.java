@@ -32,9 +32,9 @@ public class ArticleService {
     }
 
     // Read
-    public Article findById(long id) {
+    public Article findById(Long id) {
         return articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("no exist : " + id));
+                .orElseThrow(() -> new NoSuchElementException("no exist : " + id));
     }
 
     // Read All
@@ -43,7 +43,7 @@ public class ArticleService {
     }
 
     // Delete
-    public void delete(long id) {
+    public void delete(Long id) {
         if(!articleRepository.existsById(id)) {
             throw new NoSuchElementException("Article does not exist");
         }
@@ -52,9 +52,9 @@ public class ArticleService {
 
     // Update
     @Transactional // 데이터를 하나의 묶음으로 처리, 수정 후 등록하는 사이에 오류가 발생하면 처음 상태로 되돌아감
-    public Article update(long id, UpdateArticleRequest request) {
+    public Article update(Long id, UpdateArticleRequest request) {
         Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("no exist : " + id));
+                .orElseThrow(() -> new NoSuchElementException("no exist : " + id));
 
         article.update(request.getTitle(), request.getContent());
 
