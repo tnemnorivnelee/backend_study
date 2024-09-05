@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.Article;
 import com.example.demo.domain.User;
 import com.example.demo.dto.AddUserRequest;
+import com.example.demo.dto.UpdateUserRequest;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,14 @@ public class UserController {
         User user = userService.save(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
+    // Update pwd
+    @PutMapping("/register/{userId}")
+    public ResponseEntity<User> updateUserPwd(@PathVariable String userId, @RequestBody UpdateUserRequest request) {
+        User updatedUserPwd = userService.update(userId, request);
+
+        return ResponseEntity.ok().body(updatedUserPwd);
     }
 
     // Delete
