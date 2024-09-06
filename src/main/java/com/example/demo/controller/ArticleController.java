@@ -4,9 +4,13 @@ package com.example.demo.controller;
 import com.example.demo.domain.Article;
 import com.example.demo.dto.AddArticleRequest;
 import com.example.demo.dto.ArticleResponse;
+import com.example.demo.dto.ArticlesResponse;
 import com.example.demo.dto.UpdateArticleRequest;
 import com.example.demo.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,16 +63,37 @@ public class ArticleController {
 
     // Read All
     @GetMapping("/articles")
-    public ResponseEntity<List<ArticleResponse>> findAllArticle() {
+    public ResponseEntity<Page<ArticlesResponse>> findAllArticle(@RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "6") int size) {
 
-        List<ArticleResponse> articles = articleService.findAll()
-                .stream()
-                .map(ArticleResponse::new)
-                .toList();
+        Page<ArticlesResponse> articles = articleService.findAll(page, size);
+        return ResponseEntity.ok(articles);
 
-        return ResponseEntity.ok()
-                .body(articles);
+//        List<ArticlesResponse> articles = articleService.findAll(page, size);
+//
+//        return ResponseEntity.ok().body(articles);
+
+//        List<ArticleResponse> articles = articleService.findAll(page, size)
+//                .stream()
+//                .map(ArticleResponse::new)
+//                .toList();
+//
+//        return ResponseEntity.ok()
+//                .body(articles);
     }
+
+
+//    @GetMapping("/articles")
+//    public ResponseEntity<List<ArticleResponse>> findAllArticle() {
+//
+//        List<ArticleResponse> articles = articleService.findAll()
+//                .stream()
+//                .map(ArticleResponse::new)
+//                .toList();
+//
+//        return ResponseEntity.ok()
+//                .body(articles);
+//    }
 
     // Delete
     @DeleteMapping("/article/{id}")

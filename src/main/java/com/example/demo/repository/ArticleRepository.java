@@ -1,7 +1,12 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.Article;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 // repository
 // DB관리, DB 접근 담당
@@ -10,4 +15,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 // jpa 이용하여 CRUD 작업을 쉽게 구현
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
+//    @Query("SELECT a FROM Article a WHERE a.id > :cursor ORDER BY a.id ASC")
+//    Slice<Article> findArticlesAfterCursor(@Param("cursor") Long cursor, @Param("limit") int limit);
 }
