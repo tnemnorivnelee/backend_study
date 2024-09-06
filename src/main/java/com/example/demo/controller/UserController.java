@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Article;
 import com.example.demo.domain.User;
-import com.example.demo.dto.AddUserRequest;
-import com.example.demo.dto.UpdateUserRequest;
+import com.example.demo.dto.userDto.AddUserRequest;
+import com.example.demo.dto.userDto.UpdateUserRequest;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

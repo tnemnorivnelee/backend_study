@@ -2,21 +2,17 @@ package com.example.demo.controller;
 
 
 import com.example.demo.domain.Article;
-import com.example.demo.dto.AddArticleRequest;
-import com.example.demo.dto.ArticleResponse;
-import com.example.demo.dto.ArticlesResponse;
-import com.example.demo.dto.UpdateArticleRequest;
+import com.example.demo.dto.articleDto.AddArticleRequest;
+import com.example.demo.dto.articleDto.ArticleResponse;
+import com.example.demo.dto.articleDto.ArticlesResponse;
+import com.example.demo.dto.articleDto.UpdateArticleRequest;
 import com.example.demo.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 // Controller
 // HTTP요청을 처리하고 응답하는 곳

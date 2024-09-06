@@ -1,17 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.Article;
 import com.example.demo.domain.User;
-import com.example.demo.dto.AddUserRequest;
-import com.example.demo.dto.UpdateArticleRequest;
-import com.example.demo.dto.UpdateUserRequest;
+import com.example.demo.dto.userDto.AddUserRequest;
+import com.example.demo.dto.userDto.UpdateUserRequest;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service

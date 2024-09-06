@@ -1,8 +1,6 @@
-package com.example.demo.dto;
+package com.example.demo.dto.articleDto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class UpdateArticleRequest {

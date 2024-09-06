@@ -1,18 +1,16 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Article;
-import com.example.demo.dto.AddArticleRequest;
-import com.example.demo.dto.ArticlesResponse;
-import com.example.demo.dto.UpdateArticleRequest;
+import com.example.demo.dto.articleDto.AddArticleRequest;
+import com.example.demo.dto.articleDto.ArticlesResponse;
+import com.example.demo.dto.articleDto.UpdateArticleRequest;
 import com.example.demo.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 // Service
 // 비즈니스 로직 처리, 정보(객체)를 처리하는 로직 구현
