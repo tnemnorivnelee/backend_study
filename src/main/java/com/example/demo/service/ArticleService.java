@@ -55,6 +55,25 @@ public class ArticleService {
 //        return articles.getContent().stream().map(ArticlesResponse::new).collect(Collectors.toList());
     }
 
+    // Read All Infinity
+    @Transactional
+    public Slice<ArticlesResponse> findAllInfinity(Long lastId, int pageSize) {
+        Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
+//        Slice<Article> articles = articleRepository.findAll(pageable);
+
+        Slice<Article> articles;
+
+        if (lastId == null) {
+            System.out.println("lastId is null");
+            articles = articleRepository.findAll(pageable);
+        } else {
+            System.out.println("lastId is " + lastId);
+            articles = articleRepository.findByIdGreaterThan(lastId, pageable);
+        }
+
+        return articles.map(ArticlesResponse::new);
+    }
+
 
 
 //    public List<Article> findAll() {

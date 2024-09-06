@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,6 +81,17 @@ public class ArticleController {
 //
 //        return ResponseEntity.ok()
 //                .body(articles);
+    }
+
+    // Read All Infinity
+    @GetMapping("/articles/scroll")
+    public ResponseEntity<Slice<ArticlesResponse>> findAllArticleInfiniteScroll(
+            @RequestParam(value = "lastId", required = false) Long lastId,
+            @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
+
+        Slice<ArticlesResponse> articles = articleService.findAllInfinity(lastId, pageSize);
+
+        return ResponseEntity.ok(articles);
     }
 
 
