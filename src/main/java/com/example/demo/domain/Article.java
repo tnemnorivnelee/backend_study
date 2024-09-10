@@ -6,6 +6,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 // Entity
 // DB와 상호작용하는 객체 정의
@@ -13,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 객체의 무결성을 유지하기 위해 AllArgs 대신 NoArgs 이노테이션 사용
-public class Article {
+public class Article extends Date {
     // DB에 저장할 데이터 지정
 
     @Id
@@ -26,6 +33,7 @@ public class Article {
 
     @Column(name = "content", nullable = false)
     private String content;
+
 
     @Builder
     public Article(String title, String content) {

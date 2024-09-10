@@ -56,7 +56,7 @@ public class ArticleService {
     // Read All Infinity
     @Transactional
     public Slice<ArticlesResponse> findAllInfinity(Long lastId, int pageSize) {
-        Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.ASC, "updatedAt"));
 //        Slice<Article> articles = articleRepository.findAll(pageable);
 
         Slice<Article> articles;

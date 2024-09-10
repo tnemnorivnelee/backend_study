@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
-    @Column(name = "userId", updatable = false)
+    @Column(name = "user_id", updatable = false)
     private String userId;
 
     @Column(name = "pwd", nullable = false)
