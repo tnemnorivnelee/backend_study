@@ -28,10 +28,16 @@ public class ArticleService {
 
     // Create
     public Article save(AddArticleRequest request) {
-//        if(request.getTitle().isEmpty() || request.getContent().isEmpty()) {
-//            throw new NoSuchElementException("title or content is empty");
-//        }
-        return articleRepository.save(request.toEntity());
+        if(request.getTitle().isEmpty() || request.getContent().isEmpty()) {
+            throw new NoSuchElementException("title or content is empty");
+        }
+
+        Article toEntity = Article.builder().
+                title(request.getTitle())
+                .content(request.getContent())
+                .build();
+
+        return articleRepository.save(toEntity);
     }
 
     // Read

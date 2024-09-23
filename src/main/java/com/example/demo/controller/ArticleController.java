@@ -65,18 +65,6 @@ public class ArticleController {
 
         Page<ArticlesResponse> articles = articleService.findAll(page, size);
         return ResponseEntity.ok(articles);
-
-//        List<ArticlesResponse> articles = articleService.findAll(page, size);
-//
-//        return ResponseEntity.ok().body(articles);
-
-//        List<ArticleResponse> articles = articleService.findAll(page, size)
-//                .stream()
-//                .map(ArticleResponse::new)
-//                .toList();
-//
-//        return ResponseEntity.ok()
-//                .body(articles);
     }
 
     // Read All Infinity
@@ -89,19 +77,6 @@ public class ArticleController {
 
         return ResponseEntity.ok(articles);
     }
-
-
-//    @GetMapping("/articles")
-//    public ResponseEntity<List<ArticleResponse>> findAllArticle() {
-//
-//        List<ArticleResponse> articles = articleService.findAll()
-//                .stream()
-//                .map(ArticleResponse::new)
-//                .toList();
-//
-//        return ResponseEntity.ok()
-//                .body(articles);
-//    }
 
     // Delete
     @DeleteMapping("/article/{id}")
