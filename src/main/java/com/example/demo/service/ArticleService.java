@@ -32,12 +32,12 @@ public class ArticleService {
             throw new NoSuchElementException("title or content is empty");
         }
 
-        Article toEntity = Article.builder().
+        return articleRepository.save(
+                Article.builder().
                 title(request.getTitle())
                 .content(request.getContent())
-                .build();
-
-        return articleRepository.save(toEntity);
+                .build()
+        );
     }
 
     // Read
@@ -47,6 +47,7 @@ public class ArticleService {
     }
 
     // Read All
+    @Transactional(readOnly = true)
     public Page<ArticlesResponse> findAll(int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
@@ -60,7 +61,7 @@ public class ArticleService {
     }
 
     // Read All Infinity
-    @Transactional
+    @Transactional(readOnly = true)
     public Slice<ArticlesResponse> findAllInfinity(Long lastId, int pageSize) {
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.ASC, "updatedAt"));
 //        Slice<Article> articles = articleRepository.findAll(pageable);

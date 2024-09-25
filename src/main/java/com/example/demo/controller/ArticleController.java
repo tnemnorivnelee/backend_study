@@ -71,7 +71,7 @@ public class ArticleController {
     @GetMapping("/articles/scroll")
     public ResponseEntity<Slice<ArticlesResponse>> findAllArticleInfiniteScroll(
             @RequestParam(value = "lastId", required = false) Long lastId,
-            @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
 
         Slice<ArticlesResponse> articles = articleService.findAllInfinity(lastId, pageSize);
 
