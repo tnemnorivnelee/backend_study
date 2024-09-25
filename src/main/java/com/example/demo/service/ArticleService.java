@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Article;
-import com.example.demo.dto.articleDto.AddArticleRequest;
+import com.example.demo.dto.articleDto.ArticleRequest;
 import com.example.demo.dto.articleDto.ArticlesResponse;
 import com.example.demo.dto.articleDto.UpdateArticleRequest;
 import com.example.demo.repository.ArticleRepository;
@@ -27,7 +27,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
 
     // Create
-    public Article save(AddArticleRequest request) {
+    public Article save(ArticleRequest request) {
         if(request.getTitle().isEmpty() || request.getContent().isEmpty()) {
             throw new NoSuchElementException("title or content is empty");
         }
@@ -52,6 +52,9 @@ public class ArticleService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<Article> articles = articleRepository.findAll(pageable);
+//        boolean hasMore = articles.hasNext();
+
+//        Page<ArticlesResponse> map = articles.map(ArticlesResponse::new);
 
         return articles.map(ArticlesResponse::new);
 
@@ -102,7 +105,7 @@ public class ArticleService {
 
     // Update
     @Transactional // 데이터를 하나의 묶음으로 처리, 수정 후 등록하는 사이에 오류가 발생하면 처음 상태로 되돌아감
-    public Article update(Long id, UpdateArticleRequest request) {
+    public Article update(Long id, ArticleRequest request) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("no exist : " + id));
 

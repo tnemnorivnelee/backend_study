@@ -1,6 +1,5 @@
 package com.example.demo.dto.articleDto;
 
-import com.example.demo.domain.Article;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class AddArticleRequest {
+public class ArticleRequest {
     // 글 작성 시 필요한 변수 선언
 
     private String title;
