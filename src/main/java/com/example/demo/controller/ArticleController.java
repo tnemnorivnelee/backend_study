@@ -2,9 +2,10 @@ package com.example.demo.controller;
 
 
 import com.example.demo.domain.Article;
-import com.example.demo.dto.articleDto.ArticleRequest;
+import com.example.demo.dto.articleDto.AddArticleRequest;
 import com.example.demo.dto.articleDto.ArticleResponse;
 import com.example.demo.dto.articleDto.ArticlesResponse;
+import com.example.demo.dto.articleDto.UpdateArticleRequest;
 import com.example.demo.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,7 +39,7 @@ public class ArticleController {
 
     // Create
     @PostMapping("/article")
-    public ResponseEntity<Article> addArticle(@RequestBody ArticleRequest request) {
+    public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request) {
         // @RequestBody -> http요청의 body 본문이 그대로 전달되도록
 
         Article savedArticle = articleService.save(request);
@@ -88,7 +89,7 @@ public class ArticleController {
 
     // Update
     @PutMapping("/article/{id}")
-    public ResponseEntity<Article> updateArticle(@PathVariable Long id, @RequestBody ArticleRequest request) {
+    public ResponseEntity<Article> updateArticle(@PathVariable Long id, @RequestBody UpdateArticleRequest request) {
 
         Article updatedArticle = articleService.update(id, request);
 

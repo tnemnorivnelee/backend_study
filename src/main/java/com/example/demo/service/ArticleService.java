@@ -1,8 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Article;
-import com.example.demo.dto.articleDto.ArticleRequest;
+import com.example.demo.dto.articleDto.AddArticleRequest;
 import com.example.demo.dto.articleDto.ArticlesResponse;
+import com.example.demo.dto.articleDto.UpdateArticleRequest;
 import com.example.demo.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -26,17 +27,11 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
 
     // Create
-    public Article save(ArticleRequest request) {
+    public Article save(AddArticleRequest request) {
         if(request.getTitle().isEmpty() || request.getContent().isEmpty()) {
             throw new NoSuchElementException("title or content is empty");
         }
-
-        return articleRepository.save(
-                Article.builder().
-                title(request.getTitle())
-                .content(request.getContent())
-                .build()
-        );
+        return articleRepository.save(request.toEntity());
     }
 
     // Read
@@ -51,22 +46,14 @@ public class ArticleService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<Article> articles = articleRepository.findAll(pageable);
-//        boolean hasMore = articles.hasNext();
-
-//        Page<ArticlesResponse> map = articles.map(ArticlesResponse::new);
 
         return articles.map(ArticlesResponse::new);
-
-//        Page<Article> articles = articleRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
-//
-//        return articles.getContent().stream().map(ArticlesResponse::new).collect(Collectors.toList());
     }
 
     // Read All Infinity
     @Transactional(readOnly = true)
     public Slice<ArticlesResponse> findAllInfinity(Long lastId, int pageSize) {
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.ASC, "updatedAt"));
-//        Slice<Article> articles = articleRepository.findAll(pageable);
 
         Slice<Article> articles;
 
@@ -82,18 +69,6 @@ public class ArticleService {
     }
 
 
-
-//    public List<Article> findAll() {
-////        return articleRepository.findAll();
-//        List<Article> articles = articleRepository.findAll();
-//
-//        if(articles.isEmpty()) {
-//            throw new NoSuchElementException("Articles does not exits");
-//        }
-//        return articles;
-//    }
-
-
     // Delete
     public void delete(Long id) {
         if(!articleRepository.existsById(id)) {
@@ -104,7 +79,7 @@ public class ArticleService {
 
     // Update
     @Transactional // 데이터를 하나의 묶음으로 처리, 수정 후 등록하는 사이에 오류가 발생하면 처음 상태로 되돌아감
-    public Article update(Long id, ArticleRequest request) {
+    public Article update(Long id, UpdateArticleRequest request) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("no exist : " + id));
 
