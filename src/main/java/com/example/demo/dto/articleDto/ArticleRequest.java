@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 // 필요한 데이터만 선택적으로 노출시켜 보안 강화
 //
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @Getter
 public class ArticleRequest {
     // 글 작성 시 필요한 변수 선언

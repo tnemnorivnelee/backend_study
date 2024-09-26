@@ -3,7 +3,6 @@ package com.example.demo.service;
 import com.example.demo.domain.Article;
 import com.example.demo.dto.articleDto.ArticleRequest;
 import com.example.demo.dto.articleDto.ArticlesResponse;
-import com.example.demo.dto.articleDto.UpdateArticleRequest;
 import com.example.demo.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;

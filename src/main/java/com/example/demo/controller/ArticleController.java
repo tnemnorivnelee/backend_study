@@ -5,7 +5,6 @@ import com.example.demo.domain.Article;
 import com.example.demo.dto.articleDto.ArticleRequest;
 import com.example.demo.dto.articleDto.ArticleResponse;
 import com.example.demo.dto.articleDto.ArticlesResponse;
-import com.example.demo.dto.articleDto.UpdateArticleRequest;
 import com.example.demo.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
