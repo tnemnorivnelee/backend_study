@@ -1,10 +1,11 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
-import com.example.demo.domain.Article;
+import com.example.demo.entity.Article;
 import com.example.demo.dto.articleDto.AddArticleRequest;
 import com.example.demo.dto.articleDto.ArticlesResponse;
 import com.example.demo.dto.articleDto.UpdateArticleRequest;
 import com.example.demo.repository.ArticleRepository;
+import com.example.demo.service.inter.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,13 @@ import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
-public class ArticleService {
+@Transactional
+public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
 
     // Create
+    @Override
     public Article save(AddArticleRequest request) {
         if(request.getTitle().isEmpty() || request.getContent().isEmpty()) {
             throw new NoSuchElementException("title or content is empty");
@@ -35,12 +38,15 @@ public class ArticleService {
     }
 
     // Read
+    @Override
+    @Transactional(readOnly = true)
     public Article findById(Long id) {
         return articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("no exist : " + id));
     }
 
     // Read All
+    @Override
     @Transactional(readOnly = true)
     public Page<ArticlesResponse> findAll(int page, int size) {
 
@@ -51,6 +57,7 @@ public class ArticleService {
     }
 
     // Read All Infinity
+    @Override
     @Transactional(readOnly = true)
     public Slice<ArticlesResponse> findAllInfinity(Long lastId, int pageSize) {
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.ASC, "updatedAt"));
@@ -70,6 +77,7 @@ public class ArticleService {
 
 
     // Delete
+    @Override
     public void delete(Long id) {
         if(!articleRepository.existsById(id)) {
             throw new NoSuchElementException("no exist : " + id);
@@ -78,7 +86,7 @@ public class ArticleService {
     }
 
     // Update
-    @Transactional // 데이터를 하나의 묶음으로 처리, 수정 후 등록하는 사이에 오류가 발생하면 처음 상태로 되돌아감
+    @Override
     public Article update(Long id, UpdateArticleRequest request) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("no exist : " + id));

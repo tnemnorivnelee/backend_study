@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.User;
+import com.example.demo.entity.User;
 import com.example.demo.dto.userDto.AddUserRequest;
 import com.example.demo.dto.userDto.UpdateUserRequest;
 import com.example.demo.service.UserService;

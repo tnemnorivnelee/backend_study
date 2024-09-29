@@ -1,6 +1,6 @@
 package com.example.demo.dto.userDto;
 
-import com.example.demo.domain.User;
+import com.example.demo.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

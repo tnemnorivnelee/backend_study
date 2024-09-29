@@ -1,6 +1,6 @@
 package com.example.demo.dto.articleDto;
 
-import com.example.demo.domain.Article;
+import com.example.demo.entity.Article;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,6 +16,7 @@ public class AddArticleRequest {
     // 글 작성 시 필요한 변수 선언
 
     private String title;
+
     private String content;
 
     public Article toEntity() {

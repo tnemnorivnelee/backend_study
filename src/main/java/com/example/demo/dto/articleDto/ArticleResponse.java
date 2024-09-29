@@ -1,6 +1,6 @@
 package com.example.demo.dto.articleDto;
 
-import com.example.demo.domain.Article;
+import com.example.demo.entity.Article;
 import lombok.Getter;
 
 @Getter
