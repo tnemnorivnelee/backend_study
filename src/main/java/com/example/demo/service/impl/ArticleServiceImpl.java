@@ -42,7 +42,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional(readOnly = true)
     public Article findById(Long id) {
         return articleRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("no exist : " + id));
+                .orElseThrow(() -> notFoundId(id));
     }
 
     // Read All
@@ -80,7 +80,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void delete(Long id) {
         if(!articleRepository.existsById(id)) {
-            throw new NoSuchElementException("no exist : " + id);
+            throw notFoundId(id);
         }
         articleRepository.deleteById(id);
     }
@@ -89,10 +89,14 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Article update(Long id, UpdateArticleRequest request) {
         Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("no exist : " + id));
+                .orElseThrow(() -> notFoundId(id));
 
         article.update(request.getTitle(), request.getContent());
 
         return article;
+    }
+
+    private NoSuchElementException notFoundId(Long id) {
+        return new NoSuchElementException("NOT FOUND ID : " + id);
     }
 }
