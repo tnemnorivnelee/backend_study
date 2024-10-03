@@ -1,7 +1,5 @@
-package com.example.demo.dto.articleDto;
+package com.example.demo.dto.articleDTO.responseDTO;
 
-import com.example.demo.entity.Article;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 

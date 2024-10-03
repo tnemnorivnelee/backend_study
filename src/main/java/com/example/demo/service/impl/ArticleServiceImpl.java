@@ -1,6 +1,10 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.articleDto.*;
+import com.example.demo.dto.articleDTO.requestDTO.ArticleRequestDTO;
+import com.example.demo.dto.articleDTO.requestDTO.UpdateArticleRequestDTO;
+import com.example.demo.dto.articleDTO.responseDTO.AllArticleResponseDTO;
+import com.example.demo.dto.articleDTO.responseDTO.ArticleResponseDTO;
+import com.example.demo.dto.articleDTO.responseDTO.UpdateArticleResponseDTO;
 import com.example.demo.entity.Article;
 import com.example.demo.repository.ArticleRepository;
 import com.example.demo.service.inter.ArticleService;
