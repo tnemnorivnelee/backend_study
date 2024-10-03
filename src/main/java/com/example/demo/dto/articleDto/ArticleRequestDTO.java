@@ -12,11 +12,10 @@ import lombok.Getter;
 //
 @AllArgsConstructor
 @Getter
-public class AddArticleRequest {
+public class ArticleRequestDTO {
     // 글 작성 시 필요한 변수 선언
 
     private String title;
-
     private String content;
 
     public Article toEntity() {

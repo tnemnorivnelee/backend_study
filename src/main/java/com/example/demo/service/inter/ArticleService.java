@@ -1,23 +1,21 @@
 package com.example.demo.service.inter;
 
+import com.example.demo.dto.articleDto.*;
 import com.example.demo.entity.Article;
-import com.example.demo.dto.articleDto.AddArticleRequest;
-import com.example.demo.dto.articleDto.ArticlesResponse;
-import com.example.demo.dto.articleDto.UpdateArticleRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 
 public interface ArticleService {
 
-    Article save(AddArticleRequest request);
+    ArticleResponseDTO save(ArticleRequestDTO request);
 
-    Article findById(Long id);
+    ArticleResponseDTO findById(Long id);
 
-    Page<ArticlesResponse> findAll(int page, int size);
+    Page<AllArticleResponseDTO> findAll(int page, int size);
 
-    Slice<ArticlesResponse> findAllInfinity(Long lastId, int pageSize);
+    Slice<AllArticleResponseDTO> findAllInfinity(Long lastId, int pageSize);
 
     void delete(Long id);
 
-    Article update(Long id, UpdateArticleRequest request);
+    UpdateArticleResponseDTO update(Long id, UpdateArticleRequestDTO request);
 }

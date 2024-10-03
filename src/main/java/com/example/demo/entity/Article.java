@@ -2,16 +2,14 @@ package com.example.demo.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 // Entity
 // DB와 상호작용하는 객체 정의
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 객체의 무결성을 유지하기 위해 AllArgs 대신 NoArgs 이노테이션 사용
 public class Article extends Date {
     // DB에 저장할 데이터 지정
@@ -21,10 +19,10 @@ public class Article extends Date {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title")
     private String title;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content")
     private String content;
 
 

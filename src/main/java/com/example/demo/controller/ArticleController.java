@@ -1,11 +1,8 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.dto.articleDto.*;
 import com.example.demo.entity.Article;
-import com.example.demo.dto.articleDto.AddArticleRequest;
-import com.example.demo.dto.articleDto.ArticleResponse;
-import com.example.demo.dto.articleDto.ArticlesResponse;
-import com.example.demo.dto.articleDto.UpdateArticleRequest;
 import com.example.demo.service.impl.ArticleServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,42 +34,49 @@ public class ArticleController {
 
     // Create
     @PostMapping("/article")
-    public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request) {
+    public ResponseEntity<ArticleResponseDTO> createArticle(@RequestBody ArticleRequestDTO request) {
         // @RequestBody -> http요청의 body 본문이 그대로 전달되도록
 
-        Article savedArticle = articleServiceImpl.save(request);
+        ArticleResponseDTO savedArticleDTO = articleServiceImpl.save(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedArticleDTO);
     }
 
     // Read
     @GetMapping("/article/{id}") // {id} 경로변수, @PathVariable 어노테이션을 사용하여 메소드의 파라미터 값으로 가져와서 사용
-    public ResponseEntity<ArticleResponse> findArticle(@PathVariable Long id) {
+    public ResponseEntity<ArticleResponseDTO> findArticle(@PathVariable Long id) {
 
-        Article article = articleServiceImpl.findById(id);
+        ArticleResponseDTO readArticleDTO = articleServiceImpl.findById(id);
 
-        return ResponseEntity.ok().body(new ArticleResponse(article));
+        return ResponseEntity.ok().body(readArticleDTO);
     }
 
     // Read All
     @GetMapping("/articles")
-    public ResponseEntity<Page<ArticlesResponse>> findAllArticle(@RequestParam(defaultValue = "0") int page,
-                                                                @RequestParam(defaultValue = "6") int size) {
+//    public ResponseEntity<Page<ArticlesResponse>> findAllArticle(@ModelAttribute ReadAllArticleRequest request) {
+//
+//        Page<ArticlesResponse> articles = articleServiceImpl.findAll(request.getPage(), request.getSize());
+//
+//        return ResponseEntity.ok(articles);
+//    }
+    public ResponseEntity<Page<AllArticleResponseDTO>> findAllArticle(@RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "6") int size) {
 
-        Page<ArticlesResponse> articles = articleServiceImpl.findAll(page, size);
+        Page<AllArticleResponseDTO> readAllArticleDTO = articleServiceImpl.findAll(page, size);
 
-        return ResponseEntity.ok(articles);
+        return ResponseEntity.ok(readAllArticleDTO);
     }
+
 
     // Read All Infinity
     @GetMapping("/articles/scroll")
-    public ResponseEntity<Slice<ArticlesResponse>> findAllArticleInfiniteScroll(
+    public ResponseEntity<Slice<AllArticleResponseDTO>> findAllArticleInfiniteScroll(
             @RequestParam(value = "lastId", required = false) Long lastId,
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
 
-        Slice<ArticlesResponse> articles = articleServiceImpl.findAllInfinity(lastId, pageSize);
+        Slice<AllArticleResponseDTO> readAllArticleDTO = articleServiceImpl.findAllInfinity(lastId, pageSize);
 
-        return ResponseEntity.ok(articles);
+        return ResponseEntity.ok(readAllArticleDTO);
     }
 
     // Delete
@@ -86,10 +90,10 @@ public class ArticleController {
 
     // Update
     @PutMapping("/article/{id}")
-    public ResponseEntity<Article> updateArticle(@PathVariable Long id, @RequestBody UpdateArticleRequest request) {
+    public ResponseEntity<UpdateArticleResponseDTO> updateArticle(@PathVariable Long id, @RequestBody UpdateArticleRequestDTO request) {
 
-        Article updatedArticle = articleServiceImpl.update(id, request);
+        UpdateArticleResponseDTO updatedArticleDTO = articleServiceImpl.update(id, request);
 
-        return ResponseEntity.ok().body(updatedArticle);
+        return ResponseEntity.ok().body(updatedArticleDTO);
     }
 }

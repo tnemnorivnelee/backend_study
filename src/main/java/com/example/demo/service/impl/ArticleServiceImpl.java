@@ -1,9 +1,7 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.articleDto.*;
 import com.example.demo.entity.Article;
-import com.example.demo.dto.articleDto.AddArticleRequest;
-import com.example.demo.dto.articleDto.ArticlesResponse;
-import com.example.demo.dto.articleDto.UpdateArticleRequest;
 import com.example.demo.repository.ArticleRepository;
 import com.example.demo.service.inter.ArticleService;
 import lombok.RequiredArgsConstructor;
@@ -30,36 +28,49 @@ public class ArticleServiceImpl implements ArticleService {
 
     // Create
     @Override
-    public Article save(AddArticleRequest request) {
+    public ArticleResponseDTO save(ArticleRequestDTO request) {
         if(request.getTitle().isEmpty() || request.getContent().isEmpty()) {
             throw new NoSuchElementException("title or content is empty");
         }
-        return articleRepository.save(request.toEntity());
+
+        Article dtoToEntity = request.toEntity();
+
+        Article savedArticle = articleRepository.save(dtoToEntity);
+
+        return ArticleResponseDTO.builder()
+                .title(savedArticle.getTitle())
+                .content(savedArticle.getContent())
+                .build();
     }
 
     // Read
     @Override
     @Transactional(readOnly = true)
-    public Article findById(Long id) {
-        return articleRepository.findById(id)
+    public ArticleResponseDTO findById(Long id) {
+        Article article = articleRepository.findById(id)
                 .orElseThrow(() -> notFoundId(id));
+
+        return ArticleResponseDTO.builder()
+                .title(article.getTitle())
+                .content(article.getContent())
+                .build();
     }
 
     // Read All
     @Override
     @Transactional(readOnly = true)
-    public Page<ArticlesResponse> findAll(int page, int size) {
+    public Page<AllArticleResponseDTO> findAll(int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<Article> articles = articleRepository.findAll(pageable);
 
-        return articles.map(ArticlesResponse::new);
+        return articles.map(AllArticleResponseDTO::new);
     }
 
     // Read All Infinity
     @Override
     @Transactional(readOnly = true)
-    public Slice<ArticlesResponse> findAllInfinity(Long lastId, int pageSize) {
+    public Slice<AllArticleResponseDTO> findAllInfinity(Long lastId, int pageSize) {
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.ASC, "updatedAt"));
 
         Slice<Article> articles;
@@ -72,7 +83,7 @@ public class ArticleServiceImpl implements ArticleService {
             articles = articleRepository.findByIdGreaterThan(lastId, pageable);
         }
 
-        return articles.map(ArticlesResponse::new);
+        return articles.map(AllArticleResponseDTO::new);
     }
 
 
@@ -87,13 +98,16 @@ public class ArticleServiceImpl implements ArticleService {
 
     // Update
     @Override
-    public Article update(Long id, UpdateArticleRequest request) {
+    public UpdateArticleResponseDTO update(Long id, UpdateArticleRequestDTO request) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> notFoundId(id));
 
         article.update(request.getTitle(), request.getContent());
 
-        return article;
+        return UpdateArticleResponseDTO.builder()
+                .title(article.getTitle())
+                .content(article.getContent())
+                .build();
     }
 
     private NoSuchElementException notFoundId(Long id) {
