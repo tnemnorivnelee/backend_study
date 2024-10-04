@@ -106,7 +106,9 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> notFoundId(id));
 
-        article.update(request.getTitle(), request.getContent());
+        Article dtoToEntity = request.toEntity();
+
+        article.update(dtoToEntity.getTitle(), dtoToEntity.getContent());
 
         return UpdateArticleResponseDTO.builder()
                 .title(article.getTitle())

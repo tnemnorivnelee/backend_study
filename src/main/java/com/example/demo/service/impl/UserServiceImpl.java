@@ -1,9 +1,10 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.User;
 import com.example.demo.dto.userDto.AddUserRequest;
 import com.example.demo.dto.userDto.UpdateUserRequest;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.inter.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,39 +13,27 @@ import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+@Transactional
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
     // Create
+    @Override
     public User save(AddUserRequest request) {
         // 중복 검사 후 회원가입 진행
 
-        if(userRepository.existsById(request.getUserId())) {
+        if (userRepository.existsById(request.getUserId())) {
             throw new IllegalArgumentException("User already exists");
         }
         return userRepository.save(request.toEntity());
-
-//        return (User) userRepository.findById(request.getUserId())
-//                .map(user -> {
-//                    throw new IllegalArgumentException("User already exists");
-//                }).orElseGet(() -> userRepository.save(request.toEntity()));
-
-
-//        Optional<User> registeredUserId = userRepository.findById(request.getUserId());
-//
-//        if(registeredUserId.isEmpty()) {
-//            return userRepository.save(request.toEntity());
-//        } else {
-//            throw new IllegalArgumentException("User already exists");
-//        }
     }
 
     // Update
-    @Transactional
+    @Override
     public User update(String userId, UpdateUserRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("no exist : " + userId));
+                .orElseThrow(() -> notFountUser(userId));
 
         user.update(request.getPwd());
 
@@ -52,10 +41,14 @@ public class UserService {
     }
 
     // Delete
+    @Override
     public void delete(String userId) {
         if (!userRepository.existsById(userId)) {
-            throw new NoSuchElementException("User does not exist");
+            throw notFountUser(userId);
         }
         userRepository.deleteById(userId);
+    }
+    private NoSuchElementException notFountUser(String userId) {
+        return new NoSuchElementException("no exist : " + userId);
     }
 }
