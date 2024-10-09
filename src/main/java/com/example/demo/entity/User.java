@@ -1,35 +1,36 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
     @Id
-    @Column(name = "user_id", updatable = false)
-    private String userId;
+    @Column(name = "username", updatable = false)
+    private String username;
 
-    @Column(name = "pwd", nullable = false)
-    private String pwd;
+    @Column(name = "password", nullable = false)
+    private String password;
 
     @Column(name = "name", nullable = false)
     private String name;
 
+    private String role;
+
 
     @Builder
-    public User(String userId, String pwd, String name) {
-        this.userId = userId;
-        this.pwd = pwd;
+    public User(String username, String password, String name, String role) {
+        this.username = username;
+        this.password = password;
         this.name = name;
+        this.role = role;
     }
 
     public void update(String pwd) {
-        this.pwd = pwd;
+        this.password = password;
     }
 }

@@ -9,18 +9,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class AddUserRequest {
+public class JoinUserDTO {
 
-    private String userId;
-    private String pwd;
+    private String username;
+    private String password;
     private String name;
+    private String role;
 
 
-    public User toEntity() {
+    public User toEntity(String password, String role) {
         return User.builder()
-                .userId(userId)
-                .pwd(pwd)
+                .username(username)
+                .password(password)
                 .name(name)
+                .role(role)
                 .build();
     }
 }
