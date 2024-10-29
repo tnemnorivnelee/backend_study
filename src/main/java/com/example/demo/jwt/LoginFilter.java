@@ -17,13 +17,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
-        String userId = obtainUsername(request);
+        String username = obtainUsername(request);
         String password = obtainPassword(request);
 
-        System.out.println(userId);
+        System.out.println(username);
 
         // DTO(UsernamePasswordAuthenticationToken)로 변환
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userId, password, null);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
         return authenticationManager.authenticate(authToken);
     }
@@ -39,5 +39,4 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         System.out.println("FAIL");
 
     }
-
 }
