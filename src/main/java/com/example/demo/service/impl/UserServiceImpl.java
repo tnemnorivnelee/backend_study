@@ -1,7 +1,8 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.userDto.UserResponseDTO;
 import com.example.demo.entity.User;
-import com.example.demo.dto.userDto.JoinUserDTO;
+import com.example.demo.dto.userDto.UserRequestDTO;
 import com.example.demo.dto.userDto.UpdateUserRequest;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.inter.UserService;
@@ -22,15 +23,21 @@ public class UserServiceImpl implements UserService {
 
     // Create
     @Override
-    public User save(JoinUserDTO request) {
+    public UserResponseDTO save(UserRequestDTO request) {
 
-        if (userRepository.existsById(request.getUsername())) {
+        if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("User already exists");
         }
 
         User dtoToEntity = request.toEntity(bCryptPasswordEncoder.encode(request.getPassword()), "ROLE_ADMIN");
 
-        return userRepository.save(dtoToEntity);
+        User savedUser = userRepository.save(dtoToEntity);
+
+        return UserResponseDTO.builder()
+                .username(savedUser.getUsername())
+                .password(savedUser.getPassword())
+                .role(savedUser.getRole())
+                .build();
     }
 
     // Update

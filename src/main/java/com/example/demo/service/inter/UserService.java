@@ -1,12 +1,13 @@
 package com.example.demo.service.inter;
 
-import com.example.demo.dto.userDto.JoinUserDTO;
+import com.example.demo.dto.userDto.UserRequestDTO;
 import com.example.demo.dto.userDto.UpdateUserRequest;
+import com.example.demo.dto.userDto.UserResponseDTO;
 import com.example.demo.entity.User;
 
 public interface UserService {
 
-    User save(JoinUserDTO request);
+    UserResponseDTO save(UserRequestDTO request);
 
     User update(String userId, UpdateUserRequest request);
 

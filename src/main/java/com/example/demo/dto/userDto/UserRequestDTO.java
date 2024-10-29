@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class JoinUserDTO {
+public class UserRequestDTO {
 
     private String username;
     private String password;
-    private String name;
     private String role;
 
 
@@ -21,7 +20,6 @@ public class JoinUserDTO {
         return User.builder()
                 .username(username)
                 .password(password)
-                .name(name)
                 .role(role)
                 .build();
     }

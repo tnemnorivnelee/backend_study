@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.userDto.UserResponseDTO;
 import com.example.demo.entity.User;
-import com.example.demo.dto.userDto.JoinUserDTO;
+import com.example.demo.dto.userDto.UserRequestDTO;
 import com.example.demo.dto.userDto.UpdateUserRequest;
 import com.example.demo.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +18,9 @@ public class UserController {
 
     // Create
     @PostMapping("/join")
-    public ResponseEntity<User> addUser(@RequestBody JoinUserDTO request) {
+    public ResponseEntity<UserResponseDTO> addUser(@RequestBody UserRequestDTO request) {
 
-        User user = userServiceImpl.save(request);
+        UserResponseDTO user = userServiceImpl.save(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
