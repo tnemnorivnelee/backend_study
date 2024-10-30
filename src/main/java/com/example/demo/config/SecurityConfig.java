@@ -1,5 +1,7 @@
 package com.example.demo.config;
 
+import com.example.demo.jwt.JWTFilter;
+import com.example.demo.jwt.JWTUtil;
 import com.example.demo.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTUtil jwtUtil;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -45,12 +48,16 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/login", "/", "/join", "/admin").permitAll()
+//                        .requestMatchers("/admin").hasRole("ADMIN")
+//                        .requestMatchers("/admin").hasAuthority("ADMIN")
                         .anyRequest().authenticated());
 
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+
         // 원하는 자리에 필터 추가 ???????????????????????????/
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         // 세션 stateless 설정
         http
