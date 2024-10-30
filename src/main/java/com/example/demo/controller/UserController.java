@@ -25,6 +25,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
+    @GetMapping("/admin")
+    public String adminP() {
+        return "Admin Controller";
+    }
+
     // Update pwd
     @PutMapping("/join/{username}")
     public ResponseEntity<User> updateUserPwd(@PathVariable String username, @RequestBody UpdateUserRequest request) {
