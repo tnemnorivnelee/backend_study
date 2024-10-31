@@ -16,6 +16,11 @@ public class UserController {
 
     private final UserServiceImpl userServiceImpl;
 
+    @PostMapping("/login")
+    public String login(@RequestBody UserRequestDTO request) {
+        return "Login Page";
+    }
+
     // Create
     @PostMapping("/join")
     public ResponseEntity<UserResponseDTO> addUser(@RequestBody UserRequestDTO request) {
@@ -30,21 +35,21 @@ public class UserController {
         return "Admin Controller";
     }
 
-    // Update pwd
-    @PutMapping("/join/{username}")
-    public ResponseEntity<User> updateUserPwd(@PathVariable String username, @RequestBody UpdateUserRequest request) {
-        User updatedUserPwd = userServiceImpl.update(username, request);
-
-        return ResponseEntity.ok().body(updatedUserPwd);
-    }
-
-    // Delete
-    @DeleteMapping("/join/{username}")
-    public ResponseEntity<String> deleteUser(@PathVariable String username) {
-
-        userServiceImpl.delete(username);
-
-        return ResponseEntity.noContent().build();
-    }
+//    // Update pwd
+//    @PutMapping("/join/{username}")
+//    public ResponseEntity<User> updateUserPwd(@PathVariable String username, @RequestBody UpdateUserRequest request) {
+//        User updatedUserPwd = userServiceImpl.update(username, request);
+//
+//        return ResponseEntity.ok().body(updatedUserPwd);
+//    }
+//
+//    // Delete
+//    @DeleteMapping("/join/{username}")
+//    public ResponseEntity<String> deleteUser(@PathVariable String username) {
+//
+//        userServiceImpl.delete(username);
+//
+//        return ResponseEntity.noContent().build();
+//    }
 }
 

@@ -29,37 +29,37 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User already exists");
         }
 
-        User dtoToEntity = request.toEntity(bCryptPasswordEncoder.encode(request.getPassword()), "ROLE_ADMIN");
+        User dtoToEntity = request.toEntity(bCryptPasswordEncoder.encode(request.getPassword()));
 
         User savedUser = userRepository.save(dtoToEntity);
 
         return UserResponseDTO.builder()
                 .username(savedUser.getUsername())
-                .password(savedUser.getPassword())
+//                .password(savedUser.getPassword())
                 .role(savedUser.getRole())
                 .build();
     }
 
-    // Update
-    @Override
-    public User update(String username, UpdateUserRequest request) {
-        User user = userRepository.findById(username)
-                .orElseThrow(() -> notFountUser(username));
-
-        user.update(request.getPwd());
-
-        return user;
-    }
-
-    // Delete
-    @Override
-    public void delete(String username) {
-        if (!userRepository.existsById(username)) {
-            throw notFountUser(username);
-        }
-        userRepository.deleteById(username);
-    }
-    private NoSuchElementException notFountUser(String username) {
-        return new NoSuchElementException("no exist : " + username);
-    }
+//    // Update
+//    @Override
+//    public User update(String username, UpdateUserRequest request) {
+//        User user = userRepository.findById(username)
+//                .orElseThrow(() -> notFountUser(username));
+//
+//        user.update(request.getPwd());
+//
+//        return user;
+//    }
+//
+//    // Delete
+//    @Override
+//    public void delete(String username) {
+//        if (!userRepository.existsById(username)) {
+//            throw notFountUser(username);
+//        }
+//        userRepository.deleteById(username);
+//    }
+//    private NoSuchElementException notFountUser(String username) {
+//        return new NoSuchElementException("no exist : " + username);
+//    }
 }

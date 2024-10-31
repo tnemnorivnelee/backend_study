@@ -48,8 +48,8 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join", "/admin").permitAll()
-//                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/login", "/", "/join").permitAll()
+                        .requestMatchers("/admin").hasRole("ADMIN")
 //                        .requestMatchers("/admin").hasAuthority("ADMIN")
                         .anyRequest().authenticated());
 
@@ -66,5 +66,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 }

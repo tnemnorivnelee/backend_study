@@ -16,7 +16,7 @@ public class UserRequestDTO {
     private String role;
 
 
-    public User toEntity(String password, String role) {
+    public User toEntity(String password) {
         return User.builder()
                 .username(username)
                 .password(password)
