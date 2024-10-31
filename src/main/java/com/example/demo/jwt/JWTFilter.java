@@ -25,7 +25,9 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String authorization = request.getHeader("Authorization");
 
-        if(authorization == null || authorization.startsWith("Bearer ")) {
+        System.out.println("doFilterInternal auth : " + authorization);
+
+        if(authorization == null || !authorization.startsWith("Bearer ")) {
             System.out.println("token null");
             filterChain.doFilter(request, response);
 
@@ -50,6 +52,8 @@ public class JWTFilter extends OncePerRequestFilter {
         user.setUsername(username);
         user.setPassword("temppassword");
         user.setRole(role);
+
+        System.out.println("JWTFilter : " + username + " " + role);
 
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
