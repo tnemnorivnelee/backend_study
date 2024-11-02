@@ -22,10 +22,12 @@ public class MainController {
 
         System.out.println(name + " " + authentication);
 
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iter = authorities.iterator();
-        GrantedAuthority auth = iter.next();
-        String role = auth.getAuthority();
+//        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+//        Iterator<? extends GrantedAuthority> iter = authorities.iterator();
+//        GrantedAuthority auth = iter.next();
+//        String role = auth.getAuthority();
+
+        String role = authentication.getAuthorities().iterator().next().getAuthority();
 
         return "Main Controller " + name + " " + role;
     }
