@@ -16,12 +16,6 @@ public class UserController {
 
     private final UserServiceImpl userServiceImpl;
 
-    @PostMapping("/login")
-    public String login(@RequestBody UserRequestDTO request) {
-        return "Login Page";
-    }
-
-    // Create
     @PostMapping("/join")
     public ResponseEntity<UserResponseDTO> addUser(@RequestBody UserRequestDTO request) {
 
@@ -30,9 +24,20 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody UserRequestDTO request) {
+        return ResponseEntity.ok(request.getUsername() + " Login successful");
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody UserRequestDTO request) {
+        return ResponseEntity.ok(request.getUsername() + " Logout successful");
+    }
+
+
     @GetMapping("/admin")
-    public String adminP() {
-        return "Admin Controller";
+    public ResponseEntity<String> adminP() {
+        return ResponseEntity.ok("ROLE_ADMIN accessible page");
     }
 
 //    // Update pwd
