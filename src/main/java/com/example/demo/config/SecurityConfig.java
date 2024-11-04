@@ -64,19 +64,16 @@ public class SecurityConfig {
                     }
                 }));
 
-        // csrf disable
         http.csrf((auth) -> auth.disable());
 
-        // Form 로그인 방식 disable
         http.formLogin((auth) -> auth.disable());
 
-        // http basic 인증 방식 disable
         http.httpBasic((auth) -> auth.disable());
 
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join").permitAll()
+                        .requestMatchers("/login", "/", "/join", "delete/{username}", "/update").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/reissue").permitAll()
 //                        .requestMatchers("/admin").hasAuthority("ADMIN")

@@ -25,47 +25,37 @@ public class ReissueServiceImpl implements ReissueService {
     @Override
     public void reissue(HttpServletRequest request, HttpServletResponse response) {
 
-        //get refreshToken token
+        // 쿠키에서 refreshToken 가져오기
         String refreshToken = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
-
             if (cookie.getName().equals("refreshToken")) {
-
                 refreshToken = cookie.getValue();
             }
         }
 
         if (refreshToken == null) {
-
-            //response status code
             new ResponseEntity<>("refreshToken token null", HttpStatus.BAD_REQUEST);
             return;
         }
 
-        //expired check
         try {
             jwtTokenProvider.isExpired(refreshToken);
         } catch (ExpiredJwtException e) {
-
-            //response status code
             new ResponseEntity<>("refreshToken token expired", HttpStatus.BAD_REQUEST);
             return;
         }
 
-        // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
+        // refreshToken 확인
         String category = jwtTokenProvider.getCategory(refreshToken);
 
         if (!category.equals("refreshToken")) {
-
-            //response status code
             new ResponseEntity<>("invalid refreshToken token", HttpStatus.BAD_REQUEST);
             return;
         }
 
         // DB 에 저장되어 있는지 확인
         if (!refreshTokenRepository.existsByRefreshToken(refreshToken)) {
-
             new ResponseEntity<>("refreshToken does not exist", HttpStatus.BAD_REQUEST);
             return;
         }
@@ -73,18 +63,18 @@ public class ReissueServiceImpl implements ReissueService {
         String username = jwtTokenProvider.getUsername(refreshToken);
         String role = jwtTokenProvider.getRole(refreshToken);
 
-        //make new JWT
         String newAccessToken = jwtTokenProvider.createJwt("accessToken", username, role, 600000L);
         String newRefreshToken = jwtTokenProvider.createJwt("refreshToken", username, role, 864000000L);
 
         System.out.println("newAccessToken: " + newAccessToken);
         System.out.println("newRefreshToken: " + newRefreshToken);
 
-        // refresh 토큰 저장 DB에 기존 refresh 토큰 삭제 후 새 refresh 토큰을 저장
+        // 기존 refreshToken 제거
         refreshTokenRepository.deleteByRefreshToken(refreshToken);
+
+        // 새 refresh 토큰 저장
         addRefreshEntity(username, newRefreshToken);
 
-        //response
         response.setHeader("Authorization", newAccessToken);
         response.addCookie(createCookie("refreshToken", newRefreshToken));
 

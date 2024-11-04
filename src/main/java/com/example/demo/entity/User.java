@@ -30,7 +30,7 @@ public class User {
         this.role = role;
     }
 
-    public void update(String pwd) {
+    public void update(String password) {
         this.password = password;
     }
 }

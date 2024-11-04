@@ -9,7 +9,7 @@ public interface UserService {
 
     UserResponseDTO save(UserRequestDTO request);
 
-//    User update(String userId, UpdateUserRequest request);
-//
-//    void delete(String userId);
+    void update(UpdateUserRequest request);
+
+    void delete(String userId);
 }
