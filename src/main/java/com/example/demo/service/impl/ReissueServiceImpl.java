@@ -76,7 +76,7 @@ public class ReissueServiceImpl implements ReissueService {
         addRefreshEntity(username, newRefreshToken);
 
         response.setHeader("Authorization", newAccessToken);
-        response.addCookie(createCookie("refreshToken", newRefreshToken));
+        response.setHeader("refreshToken", newRefreshToken);
 
         new ResponseEntity<>(HttpStatus.OK);
     }
@@ -92,16 +92,5 @@ public class ReissueServiceImpl implements ReissueService {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
-    }
-
-    private Cookie createCookie(String key, String value) {
-
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        //cookie.setSecure(true);
-        //cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        return cookie;
     }
 }

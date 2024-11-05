@@ -40,7 +40,9 @@ public class ArticleController {
     @PostMapping("/article")
     public ResponseEntity<ArticleResponseDTO> createArticle(@RequestBody ArticleRequestDTO articleRequestDTO, @RequestHeader("Authorization") String authorization) {
         // @RequestBody -> http요청의 body 본문이 그대로 전달되도록
-
+        // HttpServletRequest vs @RequestHeader 차이
+        // 전자는 요청 전체를 전반적으로 다룰 때 사용
+        // 후자는 특정 헤더 값에 간결하게 접근할 수 있으므로 RESTful API 에서 사용하면 좋음
         System.out.println("createArticle");
 
         ArticleResponseDTO savedArticleDTO = articleServiceImpl.save(articleRequestDTO, authorization);

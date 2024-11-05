@@ -87,7 +87,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         addRefreshToken(username, refreshToken);
 
         response.setHeader("Authorization", accessToken);
-        response.addCookie(createCookie("refreshToken", refreshToken));
+        response.setHeader("refreshToken", refreshToken);
         response.setStatus(HttpStatus.OK.value()); // 200
 
     }
@@ -109,15 +109,5 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
-    }
-
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60); // 쿠키 생명 주기
-//        cookie.setSecure(true); // https 통신을 진행하는 경우 사용
-//        cookie.setPath("/"); // 쿠키가 적용될 범위
-        cookie.setHttpOnly(true); // 자바스크립트로 해당 쿠키를 접근하지 못하도록 설정
-
-        return cookie;
     }
 }
