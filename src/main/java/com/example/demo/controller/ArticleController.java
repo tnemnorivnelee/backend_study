@@ -7,6 +7,7 @@ import com.example.demo.dto.articleDTO.responseDTO.AllArticleResponseDTO;
 import com.example.demo.dto.articleDTO.responseDTO.ArticleResponseDTO;
 import com.example.demo.dto.articleDTO.responseDTO.UpdateArticleResponseDTO;
 import com.example.demo.service.impl.ArticleServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
@@ -37,10 +38,12 @@ public class ArticleController {
 
     // Create
     @PostMapping("/article")
-    public ResponseEntity<ArticleResponseDTO> createArticle(@RequestBody ArticleRequestDTO request) {
+    public ResponseEntity<ArticleResponseDTO> createArticle(@RequestBody ArticleRequestDTO articleRequestDTO, @RequestHeader("Authorization") String authorization) {
         // @RequestBody -> http요청의 body 본문이 그대로 전달되도록
 
-        ArticleResponseDTO savedArticleDTO = articleServiceImpl.save(request);
+        System.out.println("createArticle");
+
+        ArticleResponseDTO savedArticleDTO = articleServiceImpl.save(articleRequestDTO, authorization);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedArticleDTO);
     }
@@ -84,9 +87,9 @@ public class ArticleController {
 
     // Delete
     @DeleteMapping("/article/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteArticle(@PathVariable Long id, @RequestHeader("Authorization") String authorization) {
 
-        articleServiceImpl.delete(id);
+        articleServiceImpl.delete(id, authorization);
 
         return ResponseEntity.noContent().build();
     }

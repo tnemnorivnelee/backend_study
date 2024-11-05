@@ -19,6 +19,9 @@ public class Article extends Date {
     @Column(name = "id", updatable = false)
     private Long id;
 
+    @Column(name = "username")
+    private String username;
+
     @Column(name = "title")
     private String title;
 
@@ -27,7 +30,8 @@ public class Article extends Date {
 
 
     @Builder
-    public Article(String title, String content) {
+    public Article(String username, String title, String content) {
+        this.username = username;
         this.title = title;
         this.content = content;
     }

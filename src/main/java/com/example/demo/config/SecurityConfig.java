@@ -73,6 +73,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/article", "/article/{id}", "/articles", "/articles/scroll" ).permitAll()
                         .requestMatchers("/login", "/", "/join", "delete/{username}", "/update").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/reissue").permitAll()

@@ -15,4 +15,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 //    @Query("SELECT a FROM Article a WHERE a.id > :cursor ORDER BY a.id ASC")
 //    Slice<Article> findArticlesAfterCursor(@Param("cursor") Long cursor, @Param("limit") int limit);
     Slice<Article> findByIdGreaterThan(Long id, Pageable pageable);
+
+    Boolean existsByUsername(String username);
+
 }
