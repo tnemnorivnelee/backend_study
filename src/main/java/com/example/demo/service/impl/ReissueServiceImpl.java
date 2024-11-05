@@ -25,14 +25,7 @@ public class ReissueServiceImpl implements ReissueService {
     @Override
     public void reissue(HttpServletRequest request, HttpServletResponse response) {
 
-        // 쿠키에서 refreshToken 가져오기
-        String refreshToken = null;
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refreshToken")) {
-                refreshToken = cookie.getValue();
-            }
-        }
+        String refreshToken = request.getHeader("refreshToken");
 
         if (refreshToken == null) {
             new ResponseEntity<>("refreshToken token null", HttpStatus.BAD_REQUEST);
