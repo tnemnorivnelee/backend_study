@@ -87,5 +87,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
         request.setAttribute("refreshToken", null);
 
         response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write("logout success");
     }
 }

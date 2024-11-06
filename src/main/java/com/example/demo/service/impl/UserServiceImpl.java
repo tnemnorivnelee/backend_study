@@ -9,6 +9,7 @@ import com.example.demo.jwt.JwtTokenProvider;
 import com.example.demo.repository.RefreshTokenRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.inter.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -50,11 +51,18 @@ public class UserServiceImpl implements UserService {
 
     // Update
     @Override
-    public void update(UpdateUserRequest request) {
+    public void update(UpdateUserRequest request, String authorization) {
 
         User dtoToEntity = request.toEntity();
+        String accessToken = checkAccessToken(authorization.split(" ")[1]);
+        String tokenUsername = jwtTokenProvider.getUsername(accessToken);
 
-        User user = userRepository.findByUsername(dtoToEntity.getUsername());
+        // 수정 요청한 username 과 토큰 username이 같은지 검사
+        if (!tokenUsername.equals(dtoToEntity.getUsername())) {
+            throw new NoSuchElementException("username mismatch");
+        }
+
+        User user = userRepository.findByUsername(tokenUsername);
 
         if(user == null) {
             throw new NoSuchElementException("User not found");
@@ -68,9 +76,6 @@ public class UserServiceImpl implements UserService {
         String username = user.getUsername();
         String role = user.getRole();
 
-        String newAccessToken = jwtTokenProvider.createJwt("accessToken", username, role, 600000L);
-        String newRefreshToken = jwtTokenProvider.createJwt("refreshToken", username, role, 864000000L);
-
         // refresh token delete
         deleteRefreshToken(username);
 
@@ -80,7 +85,10 @@ public class UserServiceImpl implements UserService {
 
     // Delete
     @Override
-    public void delete(String username) {
+    public void delete(String authorization) {
+        String accessToken = checkAccessToken(authorization.split(" ")[1]);
+        String username = jwtTokenProvider.getUsername(accessToken);
+
         // Find user
         if (!userRepository.existsByUsername(username)) {
             throw notFountUser(username);
@@ -102,6 +110,25 @@ public class UserServiceImpl implements UserService {
         String refreshToken = refreshTokenRepository.findByUsername(username).getRefreshToken();
 
         refreshTokenRepository.deleteByRefreshToken(refreshToken);
+    }
+
+    private String checkAccessToken(String authorization) {
+        // 1. access 토큰 가져오기
+//        String accessToken = request.getHeader("Authorization");
+
+        System.out.println("accessToken : " + authorization);
+
+        if (authorization == null) {
+            throw new NoSuchElementException("login info not found");
+        }
+
+        // 2. access 토큰이 만료되었나?
+        try {
+            jwtTokenProvider.isExpired(authorization);
+        } catch (ExpiredJwtException e) {
+            throw new NoSuchElementException("accessToken expired");
+        }
+        return authorization;
     }
 
     private NoSuchElementException notFountUser(String username) {

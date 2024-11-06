@@ -28,6 +28,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    // post /login 시도시,
+    // 1. UsernamePasswordAuthenticationFilter
+    // 2. Authentication Manager
+    // 3. UserDetails
+    // 4. UserDetailsService
+    // 5. User Entity
+    // 6. User Repository
+    // 7. DB
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         // request 를 받아 실제 인증을 거치는 authenticate 으로 전달
@@ -39,7 +48,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 //        System.out.println(username);
 
         // json 방식
-        LoginDTO loginDTO = new LoginDTO();
+        LoginDTO loginDTO;
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -73,7 +82,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     // 성공 시 실행 메서드
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
 
         String username = authentication.getName();
         String role = authentication.getAuthorities().iterator().next().getAuthority();
@@ -86,10 +95,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         addRefreshToken(username, refreshToken);
 
+        System.out.println();
+
+
         response.setHeader("Authorization","Bearer " + accessToken);
         response.setHeader("refreshToken","Bearer " + refreshToken);
         response.setStatus(HttpStatus.OK.value()); // 200
-
+        response.getWriter().write("login success");
     }
 
     @Override

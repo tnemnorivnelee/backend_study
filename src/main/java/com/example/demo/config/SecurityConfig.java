@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -64,18 +65,15 @@ public class SecurityConfig {
                     }
                 }));
 
-        http.csrf((auth) -> auth.disable());
-
-        http.formLogin((auth) -> auth.disable());
-
-        http.httpBasic((auth) -> auth.disable());
-
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.formLogin(AbstractHttpConfigurer::disable);
+        http.httpBasic(AbstractHttpConfigurer::disable);
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/article", "/article/{id}", "/articles", "/articles/scroll").permitAll()
-                        .requestMatchers("/login", "/logout", "/", "/join", "delete/{username}", "/update").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/article/{id}", "/articles", "/articles/scroll").permitAll()
+                        .requestMatchers("/", "/login", "/logout", "/join", "delete/{username}", "/update").permitAll()
+                        .requestMatchers("/admin", "/article").hasRole("ADMIN")
                         .requestMatchers("/reissue").permitAll()
 //                        .requestMatchers("/admin").hasAuthority("ADMIN")
                         .anyRequest().authenticated());
