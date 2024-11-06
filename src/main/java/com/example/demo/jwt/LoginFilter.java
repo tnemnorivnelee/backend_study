@@ -86,8 +86,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         addRefreshToken(username, refreshToken);
 
-        response.setHeader("Authorization", accessToken);
-        response.setHeader("refreshToken", refreshToken);
+        response.setHeader("Authorization","Bearer " + accessToken);
+        response.setHeader("refreshToken","Bearer " + refreshToken);
         response.setStatus(HttpStatus.OK.value()); // 200
 
     }

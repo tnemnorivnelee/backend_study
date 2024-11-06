@@ -23,11 +23,11 @@ public class UserController {
 
     // Create
     @PostMapping("/join")
-    public ResponseEntity<UserResponseDTO> addUser(@RequestBody UserRequestDTO request) {
+    public ResponseEntity<String> addUser(@RequestBody UserRequestDTO request) {
 
         UserResponseDTO user = userServiceImpl.save(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        return ResponseEntity.ok().body("Join Success : " + user.getUsername());
     }
 
     @PostMapping("/login")

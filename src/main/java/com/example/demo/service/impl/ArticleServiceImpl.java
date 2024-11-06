@@ -44,7 +44,8 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleResponseDTO save(ArticleRequestDTO articleRequestDTO, String authorization) {
 
         // 로그인 확인
-        String accessToken = checkAccessToken(authorization);
+
+        String accessToken = checkAccessToken(authorization.split(" ")[1]);
 
         // 3. accessToken 유저, 권한 추출
         String username = jwtTokenProvider.getUsername(accessToken);
@@ -120,7 +121,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void delete(Long id, String authorization) {
         // 로그인 확인
-        String accessToken = checkAccessToken(authorization);
+        String accessToken = checkAccessToken(authorization.split(" ")[1]);
 
         // 3. accessToken 유저, 권한 추출
         String username = jwtTokenProvider.getUsername(accessToken);

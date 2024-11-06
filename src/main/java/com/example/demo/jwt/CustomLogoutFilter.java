@@ -42,12 +42,12 @@ public class CustomLogoutFilter extends GenericFilterBean {
         }
 
         //get refresh token
-        String refreshToken = request.getHeader("refreshToken");
+        String refreshToken = request.getHeader("refreshToken").split(" ")[1];
 
         //refresh null check
         if (refreshToken == null) {
-
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            System.out.println("refreshToken : " + refreshToken);
             return;
         }
 
