@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.userDto.CustomUserDetails;
 import com.example.demo.dto.userDto.UserResponseDTO;
 import com.example.demo.entity.RefreshToken;
 import com.example.demo.entity.User;
@@ -12,6 +13,9 @@ import com.example.demo.service.inter.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
 
     // Create
     @Override
@@ -51,56 +56,61 @@ public class UserServiceImpl implements UserService {
 
     // Update
     @Override
-    public void update(UpdateUserRequest request, String authorization) {
+    public void update(UpdateUserRequest request) {
 
-        User dtoToEntity = request.toEntity();
-        String accessToken = checkAccessToken(authorization.split(" ")[1]);
-        String tokenUsername = jwtTokenProvider.getUsername(accessToken);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails customUserDetails = (CustomUserDetails) principal;
+
+        System.out.println("SecurityContextHolder info : " + customUserDetails.getUsername() + " " + customUserDetails.getPassword());
+
+        User user = request.toEntity();
+        String tokenUsername = customUserDetails.getUsername();
 
         // 수정 요청한 username 과 토큰 username이 같은지 검사
-        if (!tokenUsername.equals(dtoToEntity.getUsername())) {
+        if (!tokenUsername.equals(user.getUsername())) {
             throw new NoSuchElementException("username mismatch");
         }
 
-        User user = userRepository.findByUsername(tokenUsername);
+//        User user = userRepository.findByUsername(tokenUsername);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(tokenUsername);
 
-        if(user == null) {
+
+        if(userDetails == null) {
             throw new NoSuchElementException("User not found");
         }
 
-        System.out.println(user.getUsername());
+        System.out.println(userDetails.getUsername());
 
         // 비밀번호를 변경하면 access, refresh 토큰도 재발급?
 
         // 토큰 재발급
-        String username = user.getUsername();
-        String role = user.getRole();
+        String username = userDetails.getUsername();
+//        String role = user.getRole();
 
         // refresh token delete
         deleteRefreshToken(username);
 
         // update password
-        user.update(bCryptPasswordEncoder.encode(dtoToEntity.getPassword()));
+        user.update(bCryptPasswordEncoder.encode(user.getPassword()));
     }
 
     // Delete
     @Override
-    public void delete(String authorization) {
-        String accessToken = checkAccessToken(authorization.split(" ")[1]);
-        String username = jwtTokenProvider.getUsername(accessToken);
+    public void delete() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails customUserDetails = (CustomUserDetails) principal;
+
+        String tokenUsername = customUserDetails.getUsername();
 
         // Find user
-        if (!userRepository.existsByUsername(username)) {
-            throw notFountUser(username);
+        if (!userRepository.existsByUsername(tokenUsername)) {
+            throw notFountUser(tokenUsername);
         }
 
-        deleteRefreshToken(username);
-
-        User user = userRepository.findByUsername(username);
-        Long userId = (long) user.getId();
+        deleteRefreshToken(tokenUsername);
 
         // Delete user
-        userRepository.deleteById(String.valueOf(userId));
+        userRepository.deleteByUsername(tokenUsername);
     }
 
     private void deleteRefreshToken(String username) {

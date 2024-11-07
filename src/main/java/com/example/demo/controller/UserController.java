@@ -48,8 +48,8 @@ public class UserController {
 
     // Update pwd
     @PutMapping("/update")
-    public ResponseEntity<String> updateUserPwd(@RequestBody UpdateUserRequest request, @RequestHeader("Authorization") String authorization) {
-        userServiceImpl.update(request, authorization);
+    public ResponseEntity<String> updateUserPwd(@RequestBody UpdateUserRequest request) {
+        userServiceImpl.update(request);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/logout"));
@@ -62,9 +62,8 @@ public class UserController {
 
     // Delete
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String authorization) {
-
-        userServiceImpl.delete(authorization);
+    public ResponseEntity<String> deleteUser() {
+        userServiceImpl.delete();
 
         return ResponseEntity.ok("user delete successful");
     }
