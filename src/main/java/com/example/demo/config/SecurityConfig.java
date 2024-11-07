@@ -75,8 +75,9 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login", "/logout", "/join", "delete/{username}", "/update").permitAll()
                         .requestMatchers("/admin", "/article").hasRole("ADMIN")
                         .requestMatchers("/reissue").permitAll()
+                        .anyRequest().permitAll());
 //                        .requestMatchers("/admin").hasAuthority("ADMIN")
-                        .anyRequest().authenticated());
+//                        .anyRequest().authenticated());
 
         http
                 .addFilterBefore(new JWTFilter(jwtTokenProvider), LoginFilter.class);

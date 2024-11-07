@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+//    private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
 
     // Create
@@ -107,6 +107,7 @@ public class UserServiceImpl implements UserService {
             throw notFountUser(tokenUsername);
         }
 
+        // logout 으로 날리는게 좋은가??
         deleteRefreshToken(tokenUsername);
 
         // Delete user
@@ -122,24 +123,24 @@ public class UserServiceImpl implements UserService {
         refreshTokenRepository.deleteByRefreshToken(refreshToken);
     }
 
-    private String checkAccessToken(String authorization) {
-        // 1. access 토큰 가져오기
-//        String accessToken = request.getHeader("Authorization");
-
-        System.out.println("accessToken : " + authorization);
-
-        if (authorization == null) {
-            throw new NoSuchElementException("login info not found");
-        }
-
-        // 2. access 토큰이 만료되었나?
-        try {
-            jwtTokenProvider.isExpired(authorization);
-        } catch (ExpiredJwtException e) {
-            throw new NoSuchElementException("accessToken expired");
-        }
-        return authorization;
-    }
+//    private String checkAccessToken(String authorization) {
+//        // 1. access 토큰 가져오기
+////        String accessToken = request.getHeader("Authorization");
+//
+//        System.out.println("accessToken : " + authorization);
+//
+//        if (authorization == null) {
+//            throw new NoSuchElementException("login info not found");
+//        }
+//
+//        // 2. access 토큰이 만료되었나?
+//        try {
+//            jwtTokenProvider.isExpired(authorization);
+//        } catch (ExpiredJwtException e) {
+//            throw new NoSuchElementException("accessToken expired");
+//        }
+//        return authorization;
+//    }
 
     private NoSuchElementException notFountUser(String username) {
         return new NoSuchElementException("no exist : " + username);
