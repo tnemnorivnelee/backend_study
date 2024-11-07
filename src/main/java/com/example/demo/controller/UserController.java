@@ -56,7 +56,8 @@ public class UserController {
 
         System.out.println("update and logout successful");
 
-        return new ResponseEntity<>(headers, HttpStatus.OK);
+//        return new ResponseEntity<>(headers, HttpStatus.OK);
+        return ResponseEntity.ok("update and logout successful");
     }
 
     // Delete
@@ -65,7 +66,7 @@ public class UserController {
 
         userServiceImpl.delete(authorization);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("user delete successful");
     }
 }
 
