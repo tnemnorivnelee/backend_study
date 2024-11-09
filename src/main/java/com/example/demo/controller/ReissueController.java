@@ -4,6 +4,7 @@ import com.example.demo.entity.RefreshToken;
 import com.example.demo.jwt.JwtTokenProvider;
 import com.example.demo.repository.RefreshTokenRepository;
 import com.example.demo.service.impl.ReissueServiceImpl;
+import com.example.demo.service.inter.ReissueService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,16 +15,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Date;
 
 @RestController
 @RequiredArgsConstructor
 public class ReissueController {
-    private final ReissueServiceImpl reissueServiceImpl;
+    private final ReissueService reissueService;
 
 
     @PostMapping("/reissue")
-    public void reissue(HttpServletRequest request, HttpServletResponse response) {
-        reissueServiceImpl.reissue(request, response);
+    public void reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        reissueService.reissue(request, response);
     }
 }

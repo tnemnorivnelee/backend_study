@@ -9,28 +9,34 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 public class ReissueServiceImpl implements ReissueService {
 
+    public static final Long AT_EXPIRED_MS = 600000L;
+    public static final Long RT_EXPIRED_MS = 864000000L;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+
 
     @Override
-    public void reissue(HttpServletRequest request, HttpServletResponse response) {
+    public void reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String refreshToken = request.getHeader("refreshToken").split(" ")[1];
+        String token = request.getHeader("refreshToken");
 
-        if (refreshToken == null) {
+        if (token == null || !token.startsWith("Bearer ")) {
             new ResponseEntity<>("refreshToken token null", HttpStatus.BAD_REQUEST);
             return;
         }
+
+        String refreshToken = token.split(" ")[1];
 
         try {
             jwtTokenProvider.isExpired(refreshToken);
@@ -42,19 +48,16 @@ public class ReissueServiceImpl implements ReissueService {
         String email = jwtTokenProvider.getEmail(refreshToken);
         String role = jwtTokenProvider.getRole(refreshToken);
 
-        String newAccessToken = jwtTokenProvider.createJwt(email, role, 600000L);
-        String newRefreshToken = jwtTokenProvider.createJwt(email, role, 864000000L);
+        String newAccessToken = jwtTokenProvider.createJwt(email, role, AT_EXPIRED_MS);
+        String newRefreshToken = jwtTokenProvider.createJwt(email, role, RT_EXPIRED_MS);
 
         System.out.println("newAccessToken: " + newAccessToken);
         System.out.println("newRefreshToken: " + newRefreshToken);
 
-        // 기존 refreshToken 제거
-        refreshTokenRepository.deleteByRefreshToken(refreshToken);
-
-
         response.setHeader("Authorization", newAccessToken);
         response.setHeader("refreshToken", newRefreshToken);
 
-        new ResponseEntity<>(HttpStatus.OK);
+        response.setStatus(HttpStatus.OK.value()); // 200
+        response.getWriter().write("reissue success : " + email);
     }
 }

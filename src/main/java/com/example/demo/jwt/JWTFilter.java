@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
 
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
@@ -42,6 +44,18 @@ public class JWTFilter extends OncePerRequestFilter {
         String accessToken = authorization.split(" ")[1];
 
         // 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
+//
+//        if (jwtTokenProvider.isExpired(accessToken)) {
+//            //response body
+//            PrintWriter writer = response.getWriter();
+//            writer.print("access token expired");
+//
+//            System.out.println("go to reissue");
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setLocation(URI.create("/reissue"));
+//        }
+
         try {
             jwtTokenProvider.isExpired(accessToken);
         } catch (ExpiredJwtException e) {
@@ -50,8 +64,15 @@ public class JWTFilter extends OncePerRequestFilter {
             PrintWriter writer = response.getWriter();
             writer.print("access token expired");
 
+            System.out.println("go to reissue");
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(URI.create("/reissue"));
+
+
+
             //response status code
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 

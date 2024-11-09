@@ -24,6 +24,10 @@ import java.util.Date;
 
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
+
+    public static final Long AT_EXPIRED_MS = 600000L;
+    public static final Long RT_EXPIRED_MS = 864000000L;
+
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -80,8 +84,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String email = authentication.getName();
         String role = authentication.getAuthorities().iterator().next().getAuthority();
 
-        String accessToken = jwtTokenProvider.createJwt(email, role, 600000L);
-        String refreshToken = jwtTokenProvider.createJwt(email, role, 86400000L);
+        String accessToken = jwtTokenProvider.createJwt(email, role, AT_EXPIRED_MS);
+        String refreshToken = jwtTokenProvider.createJwt(email, role, RT_EXPIRED_MS);
 
         System.out.println("accessToken : " + accessToken);
         System.out.println("refreshToken : " + refreshToken);

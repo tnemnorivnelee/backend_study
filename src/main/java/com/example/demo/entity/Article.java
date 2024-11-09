@@ -21,7 +21,7 @@ public class Article extends Date {
     @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "title", nullable = false)
