@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dto.userDto.CustomUserDetails;
 import com.example.demo.dto.userDto.UserResponseDTO;
+import com.example.demo.entity.Article;
 import com.example.demo.entity.RefreshToken;
 import com.example.demo.entity.User;
 import com.example.demo.dto.userDto.UserRequestDTO;
@@ -43,7 +44,9 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User already exists");
         }
 
-        User dtoToEntity = request.toEntity(bCryptPasswordEncoder.encode(request.getPassword()));
+        String encodedPwd = bCryptPasswordEncoder.encode(request.getPassword());
+        System.out.println("join encoded pwd : " +  encodedPwd);
+        User dtoToEntity = request.toEntity(encodedPwd);
 
         User savedUser = userRepository.save(dtoToEntity);
 
@@ -63,11 +66,13 @@ public class UserServiceImpl implements UserService {
 
         System.out.println("SecurityContextHolder info : " + customUserDetails.getUsername() + " " + customUserDetails.getPassword());
 
-        User user = request.toEntity();
-        String tokenUsername = customUserDetails.getUsername();
+        User dtoToEntity = request.toEntity(); // 수정할 값이 담긴 객체
+        String tokenUsername = customUserDetails.getUsername(); // 토큰에서 추출한 username 정보
+
+        User user = userRepository.findByUsername(tokenUsername);
 
         // 수정 요청한 username 과 토큰 username이 같은지 검사
-        if (!tokenUsername.equals(user.getUsername())) {
+        if (!tokenUsername.equals(dtoToEntity.getUsername())) {
             throw new NoSuchElementException("username mismatch");
         }
 
@@ -91,7 +96,10 @@ public class UserServiceImpl implements UserService {
         deleteRefreshToken(username);
 
         // update password
-        user.update(bCryptPasswordEncoder.encode(user.getPassword()));
+        String encodedPwd = bCryptPasswordEncoder.encode(dtoToEntity.getPassword());
+        System.out.println("join update pwd : " + encodedPwd);
+        dtoToEntity.update(encodedPwd);
+        // 유저 레포지토리에 바뀐 값 저장하는 로직 추가하기
     }
 
     // Delete
