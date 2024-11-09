@@ -41,12 +41,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         // request 를 받아 실제 인증을 거치는 authenticate 으로 전달
 
-//        // form-data 방식
-//        String username = obtainUsername(request);
-//        String password = obtainPassword(request);
-
-//        System.out.println(username);
-
         // json 방식
         LoginDTO loginDTO;
 
@@ -63,11 +57,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             throw new RuntimeException(e);
         }
 
-        System.out.println(loginDTO.getUsername());
-
-        String username = loginDTO.getUsername();
+        String email = loginDTO.getEmail();
         String password = loginDTO.getPassword();
 
+        System.out.println(email + " " + password);
 
         // DTO(UsernamePasswordAuthenticationToken)로 변환
         // role 넣는 법?????????????????????????????????????????????????
@@ -75,7 +68,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // UsernamePasswordAuthenticationToken 는 권한 넣는 메서드랑 안넣는 메서드 두개??
         // 안넣는 메서드는 권한 설정이 false 인데?
         // loginDTO 에 role 추가해서 넣어줘야 하나?
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
 
         return authenticationManager.authenticate(authToken);
     }
@@ -84,42 +77,24 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
 
-        String username = authentication.getName();
+        String email = authentication.getName();
         String role = authentication.getAuthorities().iterator().next().getAuthority();
 
-        String accessToken = jwtTokenProvider.createJwt("accessToken", username, role, 600000L);
-        String refreshToken = jwtTokenProvider.createJwt("refreshToken", username, role, 86400000L);
+        String accessToken = jwtTokenProvider.createJwt(email, role, 600000L);
+        String refreshToken = jwtTokenProvider.createJwt(email, role, 86400000L);
 
         System.out.println("accessToken : " + accessToken);
         System.out.println("refreshToken : " + refreshToken);
 
-        addRefreshToken(username, refreshToken);
-
-        System.out.println();
-
-
         response.setHeader("Authorization","Bearer " + accessToken);
         response.setHeader("refreshToken","Bearer " + refreshToken);
         response.setStatus(HttpStatus.OK.value()); // 200
-        response.getWriter().write("login success");
+        response.getWriter().write("login success : " + email);
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         response.setStatus(401);
         System.out.println("Unsuccessful Authentication");
-    }
-
-    private void addRefreshToken(String username, String refresh) {
-
-        Date date = new Date(System.currentTimeMillis() + 86400000L);
-
-        RefreshToken refreshToken = RefreshToken.builder()
-                .username(username)
-                .refreshToken(refresh)
-                .expiration(date.toString())
-                .build();
-
-        refreshTokenRepository.save(refreshToken);
     }
 }

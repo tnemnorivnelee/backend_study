@@ -5,7 +5,6 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor //(access = AccessLevel.PROTECTED)
 public class User {
 
@@ -13,8 +12,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", updatable = false, unique = true, nullable = false)
+    @Column(name = "username", updatable = false, nullable = false)
     private String username;
+
+    @Column(name = "email", updatable = false, nullable = false, unique = true)
+    private String email;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -23,8 +25,9 @@ public class User {
 
 
     @Builder
-    public User(String username, String password, String role) {
+    public User(String username, String email, String password, String role) {
         this.username = username;
+        this.email = email;
         this.password = password;
         this.role = role;
     }

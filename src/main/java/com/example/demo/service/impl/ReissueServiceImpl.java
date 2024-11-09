@@ -25,7 +25,7 @@ public class ReissueServiceImpl implements ReissueService {
     @Override
     public void reissue(HttpServletRequest request, HttpServletResponse response) {
 
-        String refreshToken = request.getHeader("refreshToken");
+        String refreshToken = request.getHeader("refreshToken").split(" ")[1];
 
         if (refreshToken == null) {
             new ResponseEntity<>("refreshToken token null", HttpStatus.BAD_REQUEST);
@@ -39,25 +39,11 @@ public class ReissueServiceImpl implements ReissueService {
             return;
         }
 
-        // refreshToken 확인
-        String category = jwtTokenProvider.getCategory(refreshToken);
-
-        if (!category.equals("refreshToken")) {
-            new ResponseEntity<>("invalid refreshToken token", HttpStatus.BAD_REQUEST);
-            return;
-        }
-
-        // DB 에 저장되어 있는지 확인
-        if (!refreshTokenRepository.existsByRefreshToken(refreshToken)) {
-            new ResponseEntity<>("refreshToken does not exist", HttpStatus.BAD_REQUEST);
-            return;
-        }
-
-        String username = jwtTokenProvider.getUsername(refreshToken);
+        String email = jwtTokenProvider.getEmail(refreshToken);
         String role = jwtTokenProvider.getRole(refreshToken);
 
-        String newAccessToken = jwtTokenProvider.createJwt("accessToken", username, role, 600000L);
-        String newRefreshToken = jwtTokenProvider.createJwt("refreshToken", username, role, 864000000L);
+        String newAccessToken = jwtTokenProvider.createJwt(email, role, 600000L);
+        String newRefreshToken = jwtTokenProvider.createJwt(email, role, 864000000L);
 
         System.out.println("newAccessToken: " + newAccessToken);
         System.out.println("newRefreshToken: " + newRefreshToken);
@@ -65,25 +51,10 @@ public class ReissueServiceImpl implements ReissueService {
         // 기존 refreshToken 제거
         refreshTokenRepository.deleteByRefreshToken(refreshToken);
 
-        // 새 refresh 토큰 저장
-        addRefreshEntity(username, newRefreshToken);
 
         response.setHeader("Authorization", newAccessToken);
         response.setHeader("refreshToken", newRefreshToken);
 
         new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    private void addRefreshEntity(String username, String refresh) {
-
-        Date date = new Date(System.currentTimeMillis() + 86400000L);
-
-        RefreshToken refreshToken = RefreshToken.builder()
-                .username(username)
-                .refreshToken(refresh)
-                .expiration(date.toString())
-                .build();
-
-        refreshTokenRepository.save(refreshToken);
     }
 }

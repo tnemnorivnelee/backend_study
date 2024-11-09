@@ -9,7 +9,6 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 객체의 무결성을 유지하기 위해 AllArgs 대신 NoArgs 이노테이션 사용
 public class Article extends Date {
     // DB에 저장할 데이터 지정
@@ -19,19 +18,23 @@ public class Article extends Date {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "title")
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
 
     @Builder
-    public Article(String username, String title, String content) {
+    public Article(String username, String email, String title, String content) {
         this.username = username;
+        this.email = email;
         this.title = title;
         this.content = content;
     }

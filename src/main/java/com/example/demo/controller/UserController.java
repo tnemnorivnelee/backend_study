@@ -27,7 +27,7 @@ public class UserController {
 
         UserResponseDTO user = userServiceImpl.save(request);
 
-        return ResponseEntity.ok().body("Join Success : " + user.getUsername());
+        return ResponseEntity.ok().body("Join Success : " + user.getEmail());
     }
 
     @PostMapping("/login")
@@ -42,21 +42,15 @@ public class UserController {
 
 
     @GetMapping("/admin")
-    public ResponseEntity<String> adminP() {
+    public ResponseEntity<String> adminPage() {
         return ResponseEntity.ok("ROLE_ADMIN accessible page");
     }
 
     // Update pwd
     @PutMapping("/update")
-    public ResponseEntity<String> updateUserPwd(@RequestBody UpdateUserRequest request) {
-        userServiceImpl.update(request);
+    public ResponseEntity<String> updateUserPassword(@RequestBody UpdateUserRequest request) {
+        userServiceImpl.updatePassword(request);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/logout"));
-
-        System.out.println("update and logout successful");
-
-//        return new ResponseEntity<>(headers, HttpStatus.OK);
         return ResponseEntity.ok("update and logout successful");
     }
 

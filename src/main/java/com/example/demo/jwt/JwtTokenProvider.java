@@ -27,6 +27,15 @@ public class JwtTokenProvider {
                 .get("username", String.class);
     }
 
+    public String getEmail(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey) // 서명을 검증할 키 설정
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("email", String.class);
+    }
+
     public String getRole(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -55,11 +64,10 @@ public class JwtTokenProvider {
                 .before(new Date());
     }
 
-    public String createJwt(String category, String username, String role, Long expiredMs) {
+    public String createJwt(String email, String role, Long expiredMs) {
         System.out.println("createJwt : " + role);
         return Jwts.builder()
-                .claim("category", category)
-                .claim("username", username)
+                .claim("email", email)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 토큰 만료일 설정

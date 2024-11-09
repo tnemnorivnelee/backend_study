@@ -55,25 +55,12 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 토큰이 access인지 확인 (발급시 페이로드에 명시)
-        String category = jwtTokenProvider.getCategory(accessToken);
 
-        if (!category.equals("accessToken")) {
-
-            //response body
-            PrintWriter writer = response.getWriter();
-            writer.print("invalid access token");
-
-            //response status code
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        // username, role 값을 획득
-        String username = jwtTokenProvider.getUsername(accessToken);
+        // email, role 값을 획득
+        String email = jwtTokenProvider.getEmail(accessToken);
         String role = jwtTokenProvider.getRole(accessToken);
 
-        User user = User.builder().username(username).role(role).build();
+        User user = User.builder().email(email).role(role).build();
 
         // DTO 변환
         CustomUserDetails customUserDetails = new CustomUserDetails(user);

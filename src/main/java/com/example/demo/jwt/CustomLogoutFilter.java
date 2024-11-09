@@ -41,19 +41,19 @@ public class CustomLogoutFilter extends GenericFilterBean {
             return;
         }
 
-        //get refresh token
-        String refreshToken = request.getHeader("refreshToken").split(" ")[1];
+        //get access token
+        String accessToken = request.getHeader("Authorization").split(" ")[1];
 
-        //refresh null check
-        if (refreshToken == null) {
+        //access null check
+        if (accessToken == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println("refreshToken : " + refreshToken);
+            System.out.println("accessToken : " + accessToken);
             return;
         }
 
         //expired check
         try {
-            jwtTokenProvider.isExpired(refreshToken);
+            jwtTokenProvider.isExpired(accessToken);
         } catch (ExpiredJwtException e) {
 
             //response status code
@@ -61,29 +61,10 @@ public class CustomLogoutFilter extends GenericFilterBean {
             return;
         }
 
-        // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
-        String category = jwtTokenProvider.getCategory(refreshToken);
-        if (!category.equals("refreshToken")) {
-
-            //response status code
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        //DB에 저장되어 있는지 확인
-        Boolean isExist = refreshTokenRepository.existsByRefreshToken(refreshToken);
-        if (!isExist) {
-
-            //response status code
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
         //로그아웃 진행
-        //Refresh 토큰 DB에서 제거
-        refreshTokenRepository.deleteByRefreshToken(refreshToken);
 
-        // refresh 토큰 header에서 제거
+        // 모든 토큰 제거
+        request.setAttribute("Authorization", null);
         request.setAttribute("refreshToken", null);
 
         response.setStatus(HttpServletResponse.SC_OK);

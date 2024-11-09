@@ -7,6 +7,7 @@ import com.example.demo.dto.articleDTO.responseDTO.AllArticleResponseDTO;
 import com.example.demo.dto.articleDTO.responseDTO.ArticleResponseDTO;
 import com.example.demo.dto.articleDTO.responseDTO.UpdateArticleResponseDTO;
 import com.example.demo.service.impl.ArticleServiceImpl;
+import com.example.demo.service.inter.ArticleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
 public class ArticleController {
     // 실제 작업이 수행되는 부분(jpa -> ArticleService 부분 가져와서 활용..?)
 
-    private final ArticleServiceImpl articleServiceImpl;
+    private final ArticleService articleService;
 
     // ResponseEntity
     // 결과값, 상태코드, 헤더값, 오류코드 등을 상세하게 프론트 쪽으로 넘겨줄 수 있음
@@ -38,14 +39,14 @@ public class ArticleController {
 
     // Create
     @PostMapping("/article")
-    public ResponseEntity<ArticleResponseDTO> createArticle(@RequestBody ArticleRequestDTO articleRequestDTO, @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<ArticleResponseDTO> createArticle(@RequestBody ArticleRequestDTO articleRequestDTO) {
         // @RequestBody -> http요청의 body 본문이 그대로 전달되도록
         // HttpServletRequest vs @RequestHeader 차이
         // 전자는 요청 전체를 전반적으로 다룰 때 사용
         // 후자는 특정 헤더 값에 간결하게 접근할 수 있으므로 RESTful API 에서 사용하면 좋음
         System.out.println("createArticle");
 
-        ArticleResponseDTO savedArticleDTO = articleServiceImpl.save(articleRequestDTO, authorization);
+        ArticleResponseDTO savedArticleDTO = articleService.save(articleRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedArticleDTO);
     }
@@ -54,7 +55,7 @@ public class ArticleController {
     @GetMapping("/article/{id}") // {id} 경로변수, @PathVariable 어노테이션을 사용하여 메소드의 파라미터 값으로 가져와서 사용
     public ResponseEntity<ArticleResponseDTO> findArticle(@PathVariable Long id) {
 
-        ArticleResponseDTO readArticleDTO = articleServiceImpl.findById(id);
+        ArticleResponseDTO readArticleDTO = articleService.findById(id);
 
         return ResponseEntity.ok().body(readArticleDTO);
     }
@@ -63,14 +64,14 @@ public class ArticleController {
     @GetMapping("/articles")
 //    public ResponseEntity<Page<ArticlesResponse>> findAllArticle(@ModelAttribute ReadAllArticleRequest request) {
 //
-//        Page<ArticlesResponse> articles = articleServiceImpl.findAll(request.getPage(), request.getSize());
+//        Page<ArticlesResponse> articles = articleService.findAll(request.getPage(), request.getSize());
 //
 //        return ResponseEntity.ok(articles);
 //    }
     public ResponseEntity<Page<AllArticleResponseDTO>> findAllArticle(@RequestParam(defaultValue = "0") int page,
                                                                       @RequestParam(defaultValue = "6") int size) {
 
-        Page<AllArticleResponseDTO> readAllArticleDTO = articleServiceImpl.findAll(page, size);
+        Page<AllArticleResponseDTO> readAllArticleDTO = articleService.findAll(page, size);
 
         return ResponseEntity.ok(readAllArticleDTO);
     }
@@ -82,16 +83,16 @@ public class ArticleController {
             @RequestParam(value = "lastId", required = false) Long lastId,
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
 
-        Slice<AllArticleResponseDTO> readAllArticleDTO = articleServiceImpl.findAllInfinity(lastId, pageSize);
+        Slice<AllArticleResponseDTO> readAllArticleDTO = articleService.findAllInfinity(lastId, pageSize);
 
         return ResponseEntity.ok(readAllArticleDTO);
     }
 
     // Delete
     @DeleteMapping("/article/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable Long id, @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
 
-        articleServiceImpl.delete(id, authorization);
+        articleService.delete(id);
 
         return ResponseEntity.noContent().build();
     }
@@ -100,7 +101,7 @@ public class ArticleController {
     @PutMapping("/article/{id}")
     public ResponseEntity<UpdateArticleResponseDTO> updateArticle(@PathVariable Long id, @RequestBody UpdateArticleRequestDTO request) {
 
-        UpdateArticleResponseDTO updatedArticleDTO = articleServiceImpl.update(id, request);
+        UpdateArticleResponseDTO updatedArticleDTO = articleService.update(id, request);
 
         return ResponseEntity.ok().body(updatedArticleDTO);
     }

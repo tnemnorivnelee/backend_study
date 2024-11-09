@@ -5,7 +5,9 @@ import com.example.demo.dto.articleDTO.requestDTO.UpdateArticleRequestDTO;
 import com.example.demo.dto.articleDTO.responseDTO.AllArticleResponseDTO;
 import com.example.demo.dto.articleDTO.responseDTO.ArticleResponseDTO;
 import com.example.demo.dto.articleDTO.responseDTO.UpdateArticleResponseDTO;
+import com.example.demo.dto.userDto.CustomUserDetails;
 import com.example.demo.entity.Article;
+import com.example.demo.entity.User;
 import com.example.demo.jwt.JwtTokenProvider;
 import com.example.demo.repository.ArticleRepository;
 import com.example.demo.repository.UserRepository;
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,32 +44,34 @@ public class ArticleServiceImpl implements ArticleService {
 
     // Create
     @Override
-    public ArticleResponseDTO save(ArticleRequestDTO articleRequestDTO, String authorization) {
+    public ArticleResponseDTO save(ArticleRequestDTO articleRequestDTO) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails customUserDetails = (CustomUserDetails) principal;
+
+        String tokenEmail = customUserDetails.getUsername();
+        String role = customUserDetails.getAuthorities().iterator().next().getAuthority();
+
+        System.out.println("add article user token email : " + tokenEmail + " role : " + role);
 
         // 로그인 확인
 
-        String accessToken = checkAccessToken(authorization.split(" ")[1]);
-
         // 3. accessToken 유저, 권한 추출
-        String username = jwtTokenProvider.getUsername(accessToken);
-        String role = jwtTokenProvider.getRole(accessToken);
+        User user = userRepository.findByEmail(tokenEmail)
+                .orElseThrow(() -> new NoSuchElementException("email not found"));
 
         // 4. 권한 검사
         if (!role.equals("ROLE_ADMIN")) {
             throw new IllegalArgumentException("user not authorized");
         }
 
-        // 5. 글 작성
-        if(articleRequestDTO.getTitle().isEmpty() || articleRequestDTO.getContent().isEmpty()) {
-            throw new NoSuchElementException("title or content is empty");
-        }
-
-        Article dtoToEntity = articleRequestDTO.toEntity(username);
+        Article dtoToEntity = articleRequestDTO.toEntity(user.getUsername(), tokenEmail);
 
         Article savedArticle = articleRepository.save(dtoToEntity);
 
         return ArticleResponseDTO.builder()
-                .username(username)
+                .id(savedArticle.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
                 .title(savedArticle.getTitle())
                 .content(savedArticle.getContent())
                 .build();
@@ -80,6 +85,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .orElseThrow(() -> notFoundId(id));
 
         return ArticleResponseDTO.builder()
+                .id(article.getId())
                 .username(article.getUsername())
                 .title(article.getTitle())
                 .content(article.getContent())
@@ -119,27 +125,21 @@ public class ArticleServiceImpl implements ArticleService {
 
     // Delete
     @Override
-    public void delete(Long id, String authorization) {
-        // 로그인 확인
-        String accessToken = checkAccessToken(authorization.split(" ")[1]);
+    public void delete(Long id) {
 
-        // 3. accessToken 유저, 권한 추출
-        String username = jwtTokenProvider.getUsername(accessToken);
-        String role = jwtTokenProvider.getRole(accessToken);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails customUserDetails = (CustomUserDetails) principal;
 
-        // 4. 권한 검사 (게시글 username, 토큰 username 같은 지 확인)
+        String tokenEmail = customUserDetails.getUsername();
+
+        // 4. 권한 검사 (게시글 email, 토큰 email 같은 지 확인)
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> notFoundId(id));;
-        String articleUsername = article.getUsername();
+        String articleEmail = article.getEmail();
 
-        if (username.equals(articleUsername)) {
-            throw new IllegalArgumentException("user not authorized");
+        if (!tokenEmail.equals(articleEmail)) {
+            throw new IllegalArgumentException("email mismatch");
         }
-        
-        // 5. 글 삭제
-//        if(!articleRepository.existsByUsername(username)) {
-//            throw notFoundUser(username);
-//        }
 
         articleRepository.deleteById(id);
     }
@@ -147,8 +147,19 @@ public class ArticleServiceImpl implements ArticleService {
     // Update
     @Override
     public UpdateArticleResponseDTO update(Long id, UpdateArticleRequestDTO request) {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails customUserDetails = (CustomUserDetails) principal;
+
+        String tokenEmail = customUserDetails.getUsername();
+
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> notFoundId(id));
+
+        // 토큰 email 뽑아서 해당 글 email 같은지 검사
+        if (!tokenEmail.equals(article.getEmail())) {
+            throw new IllegalArgumentException("email mismatch");
+        }
 
         Article dtoToEntity = request.toEntity();
 
@@ -158,25 +169,6 @@ public class ArticleServiceImpl implements ArticleService {
                 .title(article.getTitle())
                 .content(article.getContent())
                 .build();
-    }
-
-    private String checkAccessToken(String authorization) {
-        // 1. access 토큰 가져오기
-//        String accessToken = request.getHeader("Authorization");
-
-        System.out.println("accessToken : " + authorization);
-
-        if (authorization == null) {
-            throw new NoSuchElementException("login info not found");
-        }
-
-        // 2. access 토큰이 만료되었나?
-        try {
-            jwtTokenProvider.isExpired(authorization);
-        } catch (ExpiredJwtException e) {
-            throw new NoSuchElementException("accessToken expired");
-        }
-        return authorization;
     }
 
     private NoSuchElementException notFoundId(Long id) {

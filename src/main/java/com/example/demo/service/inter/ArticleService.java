@@ -11,7 +11,7 @@ import org.springframework.data.domain.Slice;
 
 public interface ArticleService {
 
-    ArticleResponseDTO save(ArticleRequestDTO articleRequestDTO, String authorization);
+    ArticleResponseDTO save(ArticleRequestDTO articleRequestDTO);
 
     ArticleResponseDTO findById(Long id);
 
@@ -19,7 +19,7 @@ public interface ArticleService {
 
     Slice<AllArticleResponseDTO> findAllInfinity(Long lastId, int pageSize);
 
-    void delete(Long id, String authorization);
+    void delete(Long id);
 
     UpdateArticleResponseDTO update(Long id, UpdateArticleRequestDTO request);
 }

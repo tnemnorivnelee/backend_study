@@ -18,10 +18,11 @@ public class ArticleRequestDTO {
     private String title;
     private String content;
 
-    public Article toEntity(String username) {
+    public Article toEntity(String username, String email) {
         // 빌더를 이용하여 dto를 entity로 만들어주는 메소드
         return Article.builder()
                 .username(username)
+                .email(email)
                 .title(title)
                 .content(content)
                 .build();
