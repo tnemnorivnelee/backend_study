@@ -1,6 +1,10 @@
 package com.example.demo.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -45,15 +49,6 @@ public class JwtTokenProvider {
                 .get("role", String.class);
     }
 
-    public String getCategory(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .get("category", String.class);
-    }
-
     public Boolean isExpired(String token) {
         return Jwts.parser().
                 verifyWith(secretKey)
@@ -62,6 +57,28 @@ public class JwtTokenProvider {
                 .getPayload()
                 .getExpiration()
                 .before(new Date());
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            // 서명과 유효성을 검증하면서 파싱하여 Claims 객체를 생성
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token);
+            return true; // 토큰이 유효함
+        } catch (SignatureException e) {
+            System.out.println("Invalid JWT signature: " + e.getMessage());
+        } catch (MalformedJwtException e) {
+            System.out.println("Invalid JWT token format: " + e.getMessage());
+        } catch (ExpiredJwtException e) {
+            System.out.println("Expired JWT token: " + e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            System.out.println("Unsupported JWT token: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("JWT claims string is empty: " + e.getMessage());
+        }
+        return false; // 위의 예외 중 하나라도 발생한 경우 토큰이 유효하지 않음
     }
 
     public String createJwt(String email, String role, Long expiredMs) {

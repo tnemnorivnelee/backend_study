@@ -2,29 +2,20 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dto.userDto.CustomUserDetails;
 import com.example.demo.dto.userDto.UserResponseDTO;
-import com.example.demo.entity.RefreshToken;
 import com.example.demo.entity.User;
 import com.example.demo.dto.userDto.UserRequestDTO;
 import com.example.demo.dto.userDto.UpdateUserRequest;
-import com.example.demo.jwt.JwtTokenProvider;
-import com.example.demo.repository.RefreshTokenRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.inter.UserService;
-import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
-import java.util.Date;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service

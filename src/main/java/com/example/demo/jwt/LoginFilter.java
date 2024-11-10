@@ -1,12 +1,9 @@
 package com.example.demo.jwt;
 
 import com.example.demo.dto.userDto.LoginDTO;
-import com.example.demo.entity.RefreshToken;
-import com.example.demo.repository.RefreshTokenRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,17 +17,17 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    public static final Long AT_EXPIRED_MS = 600000L;
+//    public static final Long AT_EXPIRED_MS = 600000L;
+    public static final Long AT_EXPIRED_MS = 60000L; // 임시
+
     public static final Long RT_EXPIRED_MS = 864000000L;
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     // post /login 시도시,
     // 1. UsernamePasswordAuthenticationFilter

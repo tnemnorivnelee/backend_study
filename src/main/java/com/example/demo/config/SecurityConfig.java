@@ -4,7 +4,6 @@ import com.example.demo.jwt.CustomLogoutFilter;
 import com.example.demo.jwt.JWTFilter;
 import com.example.demo.jwt.JwtTokenProvider;
 import com.example.demo.jwt.LoginFilter;
-import com.example.demo.repository.RefreshTokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +30,6 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -85,10 +83,10 @@ public class SecurityConfig {
         // 원하는 자리에 필터 추가 ???????????????????????????/
         // UsernamePasswordAuthenticationFilter 를 LoginFilter 로 대체
         // 나중에 UsernamePasswordAuthenticationFilter 로 교체하기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtTokenProvider, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         http
-                .addFilterBefore(new CustomLogoutFilter(jwtTokenProvider, refreshTokenRepository), LogoutFilter.class);
+                .addFilterBefore(new CustomLogoutFilter(jwtTokenProvider), LogoutFilter.class);
 
         // 세션 stateless 설정
         http

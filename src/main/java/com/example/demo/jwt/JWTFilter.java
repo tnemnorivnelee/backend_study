@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,56 +27,26 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         // 헤더에서 access키에 담긴 토큰을 꺼냄
-//        String accessToken = request.getHeader("Authorization").split(" ")[1];
         String authorization = request.getHeader("Authorization");
 
         System.out.println("jwtFilter accessToken : " + authorization);
 
+
         // 토큰이 없다면 다음 필터로 넘김
         if(authorization == null || !authorization.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
-            // filterChain.doFilter()???????????????????????????????
-
             return;
         }
 
         String accessToken = authorization.split(" ")[1];
 
         // 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
-//
-//        if (jwtTokenProvider.isExpired(accessToken)) {
-//            //response body
-//            PrintWriter writer = response.getWriter();
-//            writer.print("access token expired");
-//
-//            System.out.println("go to reissue");
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setLocation(URI.create("/reissue"));
-//        }
-
-        try {
-            jwtTokenProvider.isExpired(accessToken);
-        } catch (ExpiredJwtException e) {
-
-            //response body
-            PrintWriter writer = response.getWriter();
-            writer.print("access token expired");
-
-            System.out.println("go to reissue");
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create("/reissue"));
-
-
-
-            //response status code
-//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid token");
             return;
         }
-
 
         // email, role 값을 획득
         String email = jwtTokenProvider.getEmail(accessToken);

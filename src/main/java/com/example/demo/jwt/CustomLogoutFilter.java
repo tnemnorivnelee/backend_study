@@ -1,12 +1,9 @@
 package com.example.demo.jwt;
 
-import com.example.demo.repository.RefreshTokenRepository;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +14,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CustomLogoutFilter extends GenericFilterBean {
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
 
 
     @Override
@@ -52,14 +48,20 @@ public class CustomLogoutFilter extends GenericFilterBean {
         }
 
         //expired check
-        try {
-            jwtTokenProvider.isExpired(accessToken);
-        } catch (ExpiredJwtException e) {
-
-            //response status code
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid token");
             return;
         }
+
+//        try {
+//            jwtTokenProvider.isExpired(accessToken);
+//        } catch (ExpiredJwtException e) {
+//
+//            //response status code
+//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//            return;
+//        }
 
         //로그아웃 진행
 
