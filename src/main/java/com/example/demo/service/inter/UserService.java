@@ -7,7 +7,7 @@ import com.example.demo.entity.User;
 
 public interface UserService {
 
-    UserResponseDTO save(UserRequestDTO request);
+    void save(UserRequestDTO request);
 
     void updatePassword(UpdateUserRequest request);
 

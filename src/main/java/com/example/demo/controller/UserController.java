@@ -24,10 +24,9 @@ public class UserController {
     // Create
     @PostMapping("/join")
     public ResponseEntity<String> addUser(@RequestBody UserRequestDTO request) {
+        userServiceImpl.save(request);
 
-        UserResponseDTO user = userServiceImpl.save(request);
-
-        return ResponseEntity.ok().body("Join Success : " + user.getEmail());
+        return ResponseEntity.ok().body("Join Success : " + request.getEmail());
     }
 
     @PostMapping("/login")

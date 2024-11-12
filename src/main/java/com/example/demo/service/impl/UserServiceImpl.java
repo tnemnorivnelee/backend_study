@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
     // Create
     @Override
-    public UserResponseDTO save(UserRequestDTO request) {
+    public void save(UserRequestDTO request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("email already exists");
@@ -35,12 +35,7 @@ public class UserServiceImpl implements UserService {
 
         User dtoToEntity = request.toEntity(bCryptPasswordEncoder.encode(request.getPassword()));
 
-        User savedUser = userRepository.save(dtoToEntity);
-
-        return UserResponseDTO.builder()
-                .email(savedUser.getEmail())
-                .role(savedUser.getRole())
-                .build();
+        userRepository.save(dtoToEntity);
     }
 
     // Update
