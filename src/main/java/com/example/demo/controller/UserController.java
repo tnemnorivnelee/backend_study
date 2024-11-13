@@ -1,30 +1,25 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.userDto.UserResponseDTO;
-import com.example.demo.entity.User;
+import com.example.demo.dto.userDto.UpdateUserRoleRequest;
 import com.example.demo.dto.userDto.UserRequestDTO;
-import com.example.demo.dto.userDto.UpdateUserRequest;
+import com.example.demo.dto.userDto.UpdateUserPasswordRequest;
 import com.example.demo.service.impl.UserServiceImpl;
-import jakarta.servlet.http.HttpServletResponse;
+import com.example.demo.service.inter.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
 
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
 
     // Create
     @PostMapping("/join")
     public ResponseEntity<String> addUser(@RequestBody UserRequestDTO request) {
-        userServiceImpl.save(request);
+        userService.save(request);
 
         return ResponseEntity.ok().body("Join Success : " + request.getEmail());
     }
@@ -45,18 +40,26 @@ public class UserController {
         return ResponseEntity.ok("ROLE_ADMIN accessible page");
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/admin/role")
+    public ResponseEntity<String> updateUserRole(@RequestBody UpdateUserRoleRequest request) {
+        userService.updateRole(request);
+
+        return ResponseEntity.ok("updateUserRole successful");
+    }
+
     // Update pwd
     @PutMapping("/update")
-    public ResponseEntity<String> updateUserPassword(@RequestBody UpdateUserRequest request) {
-        userServiceImpl.updatePassword(request);
+    public ResponseEntity<String> updateUserPassword(@RequestBody UpdateUserPasswordRequest request) {
+        userService.updatePassword(request);
 
-        return ResponseEntity.ok("update and logout successful");
+        return ResponseEntity.ok("updatePassword and logout successful");
     }
 
     // Delete
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUser() {
-        userServiceImpl.delete();
+        userService.delete();
 
         return ResponseEntity.ok("user delete successful");
     }

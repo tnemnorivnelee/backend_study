@@ -1,20 +1,23 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.dto.userDto.CustomUserDetails;
-import com.example.demo.dto.userDto.UserResponseDTO;
+import com.example.demo.dto.userDto.UpdateUserRoleRequest;
 import com.example.demo.entity.User;
 import com.example.demo.dto.userDto.UserRequestDTO;
-import com.example.demo.dto.userDto.UpdateUserRequest;
+import com.example.demo.dto.userDto.UpdateUserPasswordRequest;
+import com.example.demo.exception.AlreadyExistsException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.inter.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
@@ -40,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     // Update
     @Override
-    public void updatePassword(UpdateUserRequest request) {
+    public void updatePassword(UpdateUserPasswordRequest request) {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CustomUserDetails customUserDetails = (CustomUserDetails) principal;
@@ -59,14 +62,39 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(tokenEmail)
                 .orElseThrow(() -> new NoSuchElementException("username not found"));
 
-        // update password
-        user.update(bCryptPasswordEncoder.encode(request.getPassword()));
+        // updatePassword password
+        user.updatePassword(bCryptPasswordEncoder.encode(request.getPassword()));
 
         // 로그아웃 하면서 토큰 모두 삭제
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/logout"));
 
-        System.out.println("update and logout successful");
+        System.out.println("updatePassword and logout successful");
+    }
+
+    @Override
+    public void updateRole(UpdateUserRoleRequest request) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails customUserDetails = (CustomUserDetails) principal;
+
+        String jsonEmail = request.toEntity().getEmail();
+        String tokenRole = customUserDetails.getAuthorities().iterator().next().getAuthority();
+
+        // 로그인 한 사람이 관리자인지 체크
+        if (!tokenRole.equals("ROLE_ADMIN")) {
+            throw new NoSuchElementException("no admin user");
+        }
+
+        // role 수정 할 user 객체 가져오기
+        User user = userRepository.findByEmail(jsonEmail)
+                .orElseThrow(() -> new NoSuchElementException("email not found"));
+
+        // 사용자 권한 체크
+        if (user.getRole().equals("ROLE_ADMIN")) {
+            throw new AlreadyExistsException("The role is already set to ROLE_ADMIN");
+        }
+
+        user.updateRole(request.getRole());
     }
 
     // Delete
@@ -78,7 +106,7 @@ public class UserServiceImpl implements UserService {
         String tokenEmail = customUserDetails.getUsername();
 
         // Find user
-        if (!userRepository.existsByUsername(tokenEmail)) {
+        if (!userRepository.existsByEmail(tokenEmail)) {
             throw notFountUser(tokenEmail);
         }
 
@@ -91,6 +119,8 @@ public class UserServiceImpl implements UserService {
 
         System.out.println("user delete and logout successful");
     }
+
+
 
     private NoSuchElementException notFountUser(String username) {
         return new NoSuchElementException("no exist : " + username);

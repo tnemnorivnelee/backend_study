@@ -1,25 +1,17 @@
 package com.example.demo.dto.userDto;
 
 import com.example.demo.entity.User;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
-public class UserRequestDTO {
-
+public class UpdateUserPasswordRequest {
     private String username;
-    private String email;
     private String password;
 
-
-    public User toEntity(String password) {
+    public User toEntity() {
+        // 빌더를 이용하여 dto를 entity로 만들어주는 메소드
         return User.builder()
                 .username(username)
-                .email(email)
                 .password(password)
                 .build();
     }

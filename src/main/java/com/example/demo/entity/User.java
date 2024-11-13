@@ -21,7 +21,15 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name ="role", nullable = false)
     private String role;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.role == null) {
+            this.role = "ROLE_USER";
+        }
+    }
 
 
     @Builder
@@ -32,7 +40,11 @@ public class User {
         this.role = role;
     }
 
-    public void update(String password) {
+    public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updateRole(String role) {
+        this.role = role;
     }
 }

@@ -1,15 +1,16 @@
 package com.example.demo.service.inter;
 
+import com.example.demo.dto.userDto.UpdateUserRoleRequest;
 import com.example.demo.dto.userDto.UserRequestDTO;
-import com.example.demo.dto.userDto.UpdateUserRequest;
-import com.example.demo.dto.userDto.UserResponseDTO;
-import com.example.demo.entity.User;
+import com.example.demo.dto.userDto.UpdateUserPasswordRequest;
 
 public interface UserService {
 
     void save(UserRequestDTO request);
 
-    void updatePassword(UpdateUserRequest request);
+    void updatePassword(UpdateUserPasswordRequest request);
 
     void delete();
+
+    void updateRole(UpdateUserRoleRequest request);
 }

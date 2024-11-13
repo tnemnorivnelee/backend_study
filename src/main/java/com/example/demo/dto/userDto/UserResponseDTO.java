@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class UserResponseDTO {
 
-    private String username;
-    private String email;
-    private String password;
-    private String role;
+    private final String username;
+    private final String email;
+    private final String password;
+    private final String role;
 
     @Builder
     public UserResponseDTO(String username, String email, String password, String role) {
