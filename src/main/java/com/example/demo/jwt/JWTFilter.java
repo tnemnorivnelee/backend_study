@@ -1,5 +1,6 @@
 package com.example.demo.jwt;
 
+import com.example.demo.common.Role;
 import com.example.demo.dto.userDto.CustomUserDetails;
 import com.example.demo.entity.User;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -52,7 +53,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String email = jwtTokenProvider.getEmail(accessToken);
         String role = jwtTokenProvider.getRole(accessToken);
 
-        User user = User.builder().email(email).role(role).build();
+        User user = User.builder().email(email).role(Role.valueOf(role)).build();
 
         // DTO 변환
         CustomUserDetails customUserDetails = new CustomUserDetails(user);

@@ -1,5 +1,6 @@
 package com.example.demo.jwt;
 
+import com.example.demo.common.Role;
 import com.example.demo.dto.userDto.LoginDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -79,10 +80,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
 
         String email = authentication.getName();
-        String role = authentication.getAuthorities().iterator().next().getAuthority();
+        Role role = Role.valueOf(authentication.getAuthorities().iterator().next().getAuthority());
 
-        String accessToken = jwtTokenProvider.createJwt(email, role, AT_EXPIRED_MS);
-        String refreshToken = jwtTokenProvider.createJwt(email, role, RT_EXPIRED_MS);
+        String accessToken = jwtTokenProvider.createJwt(email, role.toString(), AT_EXPIRED_MS);
+        String refreshToken = jwtTokenProvider.createJwt(email, role.toString(), RT_EXPIRED_MS);
 
         System.out.println("accessToken : " + accessToken);
         System.out.println("refreshToken : " + refreshToken);

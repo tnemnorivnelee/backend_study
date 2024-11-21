@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.common.Role;
 import com.example.demo.dto.articleDTO.requestDTO.ArticleRequestDTO;
 import com.example.demo.dto.articleDTO.requestDTO.UpdateArticleRequestDTO;
 import com.example.demo.dto.articleDTO.responseDTO.AllArticleResponseDTO;
@@ -49,7 +50,7 @@ public class ArticleServiceImpl implements ArticleService {
         CustomUserDetails customUserDetails = (CustomUserDetails) principal;
 
         String tokenEmail = customUserDetails.getUsername();
-        String role = customUserDetails.getAuthorities().iterator().next().getAuthority();
+        Role role = Role.valueOf(customUserDetails.getAuthorities().iterator().next().getAuthority());
 
         System.out.println("add article user token email : " + tokenEmail + " role : " + role);
 
@@ -60,7 +61,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .orElseThrow(() -> new NoSuchElementException("email not found"));
 
         // 4. 권한 검사
-        if (!role.equals("ROLE_ADMIN")) {
+        if (!role.equals(Role.ROLE_ADMIN)) {
             throw new IllegalArgumentException("user not authorized");
         }
 

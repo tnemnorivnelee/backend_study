@@ -82,7 +82,6 @@ public class SecurityConfig {
 
         // 원하는 자리에 필터 추가 ???????????????????????????/
         // UsernamePasswordAuthenticationFilter 를 LoginFilter 로 대체
-        // 나중에 UsernamePasswordAuthenticationFilter 로 교체하기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         http

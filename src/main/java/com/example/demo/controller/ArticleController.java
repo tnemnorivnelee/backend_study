@@ -29,13 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor // 초기화 되지 않은 필드에 대해 자동으로 생성자를 생성
 @RestController // view가 필요없는 api만 지원하는 서비스에서 사용, Json 형태로 객체 데이터 반환
 public class ArticleController {
-    // 실제 작업이 수행되는 부분(jpa -> ArticleService 부분 가져와서 활용..?)
-
     private final ArticleService articleService;
-
-    // ResponseEntity
-    // 결과값, 상태코드, 헤더값, 오류코드 등을 상세하게 프론트 쪽으로 넘겨줄 수 있음
-
 
     // Create
     @PostMapping("/article")
@@ -62,12 +56,6 @@ public class ArticleController {
 
     // Read All
     @GetMapping("/articles")
-//    public ResponseEntity<Page<ArticlesResponse>> findAllArticle(@ModelAttribute ReadAllArticleRequest request) {
-//
-//        Page<ArticlesResponse> articles = articleService.findAll(request.getPage(), request.getSize());
-//
-//        return ResponseEntity.ok(articles);
-//    }
     public ResponseEntity<Page<AllArticleResponseDTO>> findAllArticle(@RequestParam(defaultValue = "0") int page,
                                                                       @RequestParam(defaultValue = "6") int size) {
 

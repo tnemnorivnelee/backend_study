@@ -54,15 +54,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
             return;
         }
 
-//        try {
-//            jwtTokenProvider.isExpired(accessToken);
-//        } catch (ExpiredJwtException e) {
-//
-//            //response status code
-//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            return;
-//        }
-
         //로그아웃 진행
 
         // 모든 토큰 제거

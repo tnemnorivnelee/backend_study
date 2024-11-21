@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.common.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,18 +23,19 @@ public class User {
     private String password;
 
     @Column(name ="role", nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @PrePersist
     public void prePersist() {
         if (this.role == null) {
-            this.role = "ROLE_USER";
+            this.role = Role.ROLE_USER;
         }
     }
 
 
     @Builder
-    public User(String username, String email, String password, String role) {
+    public User(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -44,7 +46,7 @@ public class User {
         this.password = password;
     }
 
-    public void updateRole(String role) {
+    public void updateRole(Role role) {
         this.role = role;
     }
 }

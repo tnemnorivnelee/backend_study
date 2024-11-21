@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.common.Role;
 import com.example.demo.dto.userDto.CustomUserDetails;
 import com.example.demo.dto.userDto.UpdateUserRoleRequest;
 import com.example.demo.entity.User;
@@ -32,8 +33,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(UserRequestDTO request) {
 
+        if (request.getUsername().equals("admin")) {
+            throw new AlreadyExistsException("admin already exists");
+        }
+
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("email already exists");
+            throw new AlreadyExistsException("email already exists");
         }
 
         User dtoToEntity = request.toEntity(bCryptPasswordEncoder.encode(request.getPassword()));
@@ -78,10 +83,10 @@ public class UserServiceImpl implements UserService {
         CustomUserDetails customUserDetails = (CustomUserDetails) principal;
 
         String jsonEmail = request.toEntity().getEmail();
-        String tokenRole = customUserDetails.getAuthorities().iterator().next().getAuthority();
+        Role tokenRole = Role.valueOf(customUserDetails.getAuthorities().iterator().next().getAuthority());
 
         // 로그인 한 사람이 관리자인지 체크
-        if (!tokenRole.equals("ROLE_ADMIN")) {
+        if (!tokenRole.equals(Role.ROLE_ADMIN)) {
             throw new NoSuchElementException("no admin user");
         }
 
@@ -90,7 +95,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NoSuchElementException("email not found"));
 
         // 사용자 권한 체크
-        if (user.getRole().equals("ROLE_ADMIN")) {
+        if (user.getRole().equals(Role.ROLE_ADMIN)) {
             throw new AlreadyExistsException("The role is already set to ROLE_ADMIN");
         }
 

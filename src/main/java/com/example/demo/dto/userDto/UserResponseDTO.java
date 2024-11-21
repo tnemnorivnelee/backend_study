@@ -1,5 +1,6 @@
 package com.example.demo.dto.userDto;
 
+import com.example.demo.common.Role;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,10 +10,10 @@ public class UserResponseDTO {
     private final String username;
     private final String email;
     private final String password;
-    private final String role;
+    private final Role role;
 
     @Builder
-    public UserResponseDTO(String username, String email, String password, String role) {
+    public UserResponseDTO(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;

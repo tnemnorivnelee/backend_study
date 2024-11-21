@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.common.Role;
 import com.example.demo.jwt.JwtTokenProvider;
 import com.example.demo.service.inter.ReissueService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -9,11 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReissueServiceImpl implements ReissueService {
 
 //    public static final Long AT_EXPIRED_MS = 600000L;
@@ -43,13 +46,6 @@ public class ReissueServiceImpl implements ReissueService {
             response.getWriter().write("Invalid token");
             return;
         }
-
-//        try {
-//            jwtTokenProvider.isExpired(refreshToken);
-//        } catch (ExpiredJwtException e) {
-//            new ResponseEntity<>("refreshToken token expired", HttpStatus.BAD_REQUEST);
-//            return;
-//        }
 
         String email = jwtTokenProvider.getEmail(refreshToken);
         String role = jwtTokenProvider.getRole(refreshToken);
