@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.common.Role;
+import com.example.demo.enums.ErrorCode;
+import com.example.demo.enums.Role;
 import com.example.demo.dto.userDto.CustomUserDetails;
 import com.example.demo.dto.userDto.UpdateUserRoleRequest;
 import com.example.demo.entity.User;
@@ -11,14 +12,12 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.inter.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
@@ -34,11 +33,11 @@ public class UserServiceImpl implements UserService {
     public void save(UserRequestDTO request) {
 
         if (request.getUsername().equals("admin")) {
-            throw new AlreadyExistsException("admin already exists");
+            throw new AlreadyExistsException("admin already exists", ErrorCode.DUPLICATE_RESOURCE);
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new AlreadyExistsException("email already exists");
+            throw new AlreadyExistsException("email already exists", ErrorCode.DUPLICATE_RESOURCE);
         }
 
         User dtoToEntity = request.toEntity(bCryptPasswordEncoder.encode(request.getPassword()));
@@ -96,7 +95,7 @@ public class UserServiceImpl implements UserService {
 
         // 사용자 권한 체크
         if (user.getRole().equals(Role.ROLE_ADMIN)) {
-            throw new AlreadyExistsException("The role is already set to ROLE_ADMIN");
+            throw new AlreadyExistsException("The role is already set to ROLE_ADMIN", ErrorCode.DUPLICATE_RESOURCE);
         }
 
         user.updateRole(request.getRole());

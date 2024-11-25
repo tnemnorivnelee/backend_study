@@ -1,6 +1,6 @@
 package com.example.demo.init;
 
-import com.example.demo.common.Role;
+import com.example.demo.enums.Role;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

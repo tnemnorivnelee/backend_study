@@ -1,6 +1,5 @@
 package com.example.demo.jwt;
 
-import com.example.demo.common.Role;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;

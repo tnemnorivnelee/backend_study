@@ -17,11 +17,12 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(AlreadyExistsException.class)
   public ResponseEntity<ErrorResponse> handleAlreadyExistsException(AlreadyExistsException e, WebRequest request) {
 
-    ErrorResponse errorResponse = new ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
-            e.getMessage(),
-            request.getDescription(false)
-    );
+    ErrorResponse errorResponse = ErrorResponse
+            .builder()
+            .statusCode(HttpStatus.BAD_REQUEST.value())
+            .message(e.getMessage())
+            .details(request.getDescription(false))
+            .build();
 
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }

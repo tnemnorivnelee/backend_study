@@ -1,9 +1,7 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.common.Role;
 import com.example.demo.jwt.JwtTokenProvider;
 import com.example.demo.service.inter.ReissueService;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

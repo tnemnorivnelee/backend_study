@@ -1,6 +1,6 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.common.Role;
+import com.example.demo.enums.Role;
 import com.example.demo.dto.articleDTO.requestDTO.ArticleRequestDTO;
 import com.example.demo.dto.articleDTO.requestDTO.UpdateArticleRequestDTO;
 import com.example.demo.dto.articleDTO.responseDTO.AllArticleResponseDTO;
@@ -13,18 +13,13 @@ import com.example.demo.jwt.JwtTokenProvider;
 import com.example.demo.repository.ArticleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.inter.ArticleService;
-import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 // Service
 // 비즈니스 로직 처리, 정보(객체)를 처리하는 로직 구현

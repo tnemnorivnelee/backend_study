@@ -1,6 +1,6 @@
 package com.example.demo.jwt;
 
-import com.example.demo.common.Role;
+import com.example.demo.enums.Role;
 import com.example.demo.dto.userDto.LoginDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;

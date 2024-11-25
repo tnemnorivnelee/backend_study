@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.common.Role;
+import com.example.demo.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
